@@ -1,0 +1,24 @@
+{
+  "name": "nodes-component-starter",
+  "version": "1.0.0",
+  "description": "Boilerplate for Nodes components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodes-frontend/nodes-component-starter.git"
+  },
+  "keywords": [
+    "angular",
+    "component",
+    "boilerplate"
+  ],
+  "author": "Alexander Hafstad <alexander@hafstad.dk> (http://www.nodesagency.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nodes-frontend/nodes-component-starter/issues"
+  },
+  "homepage": "https://github.com/nodes-frontend/nodes-component-starter#readme"
+}

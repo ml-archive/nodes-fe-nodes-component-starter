@@ -6,6 +6,7 @@
   "scripts": {
     "commit": "git-cz",
     "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
+    "karma": "./node_modules/karma/bin/karma start karma.conf.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -32,6 +33,7 @@
     "jasmine-core": "2.4.1",
     "karma": "0.13.19",
     "karma-chrome-launcher": "0.2.2",
+    "karma-coverage": "0.5.3",
     "karma-jasmine": "0.3.6",
     "karma-phantomjs-launcher": "0.2.3",
     "phantomjs": "1.9.19",

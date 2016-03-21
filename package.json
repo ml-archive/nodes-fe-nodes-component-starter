@@ -39,14 +39,32 @@
     "karma-jasmine": "0.3.6",
     "karma-phantomjs-launcher": "0.2.3",
     "phantomjs": "1.9.19",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^4.3.5",
+    "validate-commit-msg": "2.4.1"
   },
   "config": {
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
     },
     "ghooks": {
-      "pre-commit": "npm run test"
+      "pre-commit": "npm run test",
+      "commit-msg": "validate-commit-msg"
+    },
+    "validate-commit-msg": {
+      "types": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "chore",
+        "revert",
+        "custom"
+      ],
+      "warnOnFail": false,
+      "maxSubjectLength": 100
     }
   }
 }

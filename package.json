@@ -1,50 +1,54 @@
 {
-  "name": "nodes-component-starter",
-  "version": "0.0.0-semantically-released",
-  "description": "Boilerplate for Nodes components",
-  "main": "index.js",
-  "scripts": {
-    "commit": "git-cz",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
-    "karma": "./node_modules/karma/bin/karma start karma.conf.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nodes-frontend/nodes-component-starter.git"
-  },
-  "keywords": [
-    "angular",
-    "component",
-    "boilerplate"
-  ],
-  "author": "Alexander Hafstad <alexander@hafstad.dk> (http://www.nodesagency.com/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nodes-frontend/nodes-component-starter/issues"
-  },
-  "homepage": "https://github.com/nodes-frontend/nodes-component-starter#readme",
-  "devDependencies": {
-    "angular": "1.4.8",
-    "angular-mocks": "1.4.8",
-    "commitizen": "2.5.0",
-    "cz-conventional-changelog": "1.1.5",
-    "ghooks": "1.0.3",
-    "jasmine-core": "2.4.1",
-    "karma": "0.13.19",
-    "karma-chrome-launcher": "0.2.2",
-    "karma-coverage": "0.5.3",
-    "karma-jasmine": "0.3.6",
-    "karma-phantomjs-launcher": "0.2.3",
-    "phantomjs": "1.9.19",
-    "semantic-release": "^4.3.5"
-  },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-conventional-changelog"
-    },
-    "ghooks": {
-      "pre-commit": "npm run test"
-    }
-  }
+	"name": "nodes-component-starter",
+	"version": "0.0.0-semantically-released",
+	"description": "Boilerplate for Nodes components",
+	"main": "index.js",
+	"scripts": {
+		"commit": "git-cz",
+		"test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
+		"karma": "./node_modules/karma/bin/karma start karma.conf.js",
+		"semantic-release": "semantic-release pre && npm publish && semantic-release post",
+		"serve:dev": "lite-server -c browsersync.dev.config.js",
+		"serve:build": "lite-server -c browsersync.build.config.js",
+		"serve": "npm run serve:dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/nodes-frontend/nodes-component-starter.git"
+	},
+	"keywords": [
+		"angular",
+		"component",
+		"boilerplate"
+	],
+	"author": "Alexander Hafstad <alexander@hafstad.dk> (http://www.nodesagency.com/)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/nodes-frontend/nodes-component-starter/issues"
+	},
+	"homepage": "https://github.com/nodes-frontend/nodes-component-starter#readme",
+	"devDependencies": {
+		"angular": "1.4.8",
+		"angular-mocks": "1.4.8",
+		"commitizen": "2.5.0",
+		"cz-conventional-changelog": "1.1.5",
+		"ghooks": "1.0.3",
+		"jasmine-core": "2.4.1",
+		"karma": "0.13.19",
+		"karma-chrome-launcher": "0.2.2",
+		"karma-coverage": "0.5.3",
+		"karma-jasmine": "0.3.6",
+		"karma-phantomjs-launcher": "0.2.3",
+		"lite-server": "^2.2.0",
+		"phantomjs": "1.9.19",
+		"semantic-release": "^4.3.5"
+	},
+	"config": {
+		"commitizen": {
+			"path": "node_modules/cz-conventional-changelog"
+		},
+		"ghooks": {
+			"pre-commit": "npm run test"
+		}
+	}
 }

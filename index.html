@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>... nodes-component-start ...</title>
+    </head>
+    <body ng-app="demoApp">
+        <div ng-controller="demoCtrl as demo">
+            {{demo.testValue}}
+        </div>
+
+        <script src="node_modules/angular/angular.js"></script>
+        <script>
+            (function() {
+
+                angular.module('demoApp', []);
+
+                angular
+                    .module('demoApp')
+                    .controller('demoCtrl', function() {
+                       var vm = this;
+                        vm.testValue = 'Greetings from Angular!';
+                    });
+
+            })();
+        </script>
+    </body>
+</html>

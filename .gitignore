@@ -1,5 +1,7 @@
 *~
 .DS_Store
+.coveralls.yml
 node_modules
 .idea/
+coverage/
 npm-debug.log

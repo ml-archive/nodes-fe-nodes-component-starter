@@ -2,19 +2,23 @@ sudo: false
 language: node_js
 cache:
   directories:
-    - node_modules
+  - node_modules
 notifications:
   email: false
 node_js:
-  - '4'
+- '4'
 before_install:
-  - npm i -g npm@^2.0.0
+- npm i -g npm@^2.0.0
 before_script:
-  - npm prune
+- npm prune
 script:
-  - npm run test
+- npm run test
 after_success:
-  - npm run semantic-release
+- npm run semantic-release
+- npm run coveralls
 branches:
   except:
-    - "/^v\\d+\\.\\d+\\.\\d+$/"
+  - /^v\d+\.\d+\.\d+$/
+env:
+  global:
+    secure: DouMEMqdhU9fuFatOmMEme3eilCjg0Jmye5aeLjIrOcB3s2w2nB8cwZQucG1xUoqrhUfQqDGmgH+XzRe5NOUKC4UIOepeCi3WvdVCX+ebwC/GJ2me9fT6vNE8wC6xfgo5UVjsIstlPI2hcBDvO/rK/WwkxcHZ1qHwUykpPpCkwbTgtpLQyWsweP8s+Sg1eQzrd7xd6en8m6ueoO9rkuBb2H1/Q4G3L7o7NAGkkBaB+5dBullEeKa42sKS5v/YBHVGtxW0cztchhxLON6s+w3qzdcssijj77UmFrmKwdQ9tUUWuqxGSEdAp7RdA2FcF2TE2uV7biVXt93Q6KLL8T55z9GgpbDDhpIeq2RMw57ttRyfCITeDD4SeoGHrLOhK/OoDnx5kkJlbC8G0sYRUv/ecqyUwvlI3Pp8i/EItUj3ZDOFi+AM2uISQU7AOI49I5beaJMxvk459uUD6aif+eZZlxJoyX0hynRkUBtihMusDq5yKm61eZ3Fy2GaodYF4S7z0qSjK0s5S6013g5njbqTfat3fUgSZ+vV7ffMeo9crNQIFha+74NIECKkvblo1EoWBR4UyVoKLPHGla36iIOoRI+wJ0aTYiQJa9pQBi48vlbQq/PFVMPaiZqeXynAkPGS041xyBuQnQnFmJE1l/dgKtGPJ1ACz8F2bijRiAE5TM=

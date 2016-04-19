@@ -33,6 +33,9 @@ var config = {
 	autoprefixer: {
 		browsers: ['last 2 versions']
 	},
+	cssnano: {
+		safe: true
+	},
 	babel: {
 		presets: ['es2015']
 	},
@@ -61,7 +64,7 @@ var config = {
 gulp.task('styles', function() {
 	var processors = [
 		autoprefixer(config.autoprefixer),
-		cssnano
+		cssnano(config.cssnano)
 	];
 
 	return gulp.src(config.sass.src)

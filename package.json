@@ -10,7 +10,8 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "serve:dev": "lite-server -c browsersync.dev.config.js",
     "serve:build": "lite-server -c browsersync.build.config.js",
-    "serve": "npm run serve:dev"
+    "serve": "npm run serve:dev",
+    "jscs": "npm run jscs src/*"
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
     "gulp-sass": "2.2.0",
     "gulp-sourcemaps": "1.6.0",
     "jasmine-core": "2.4.1",
+    "jscs": "^3.0.3",
     "karma": "0.13.19",
     "karma-babel-preprocessor": "6.0.1",
     "karma-chrome-launcher": "0.2.2",

@@ -4,7 +4,7 @@
   "description": "Boilerplate for Nodes components",
   "main": "index.js",
   "scripts": {
-    "commit": "git-cz",
+    "commit": "./node_modules/.bin/git-cz",
     "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "karma": "./node_modules/karma/bin/karma start karma.conf.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",

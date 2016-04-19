@@ -64,7 +64,7 @@
     },
     "ghooks": {
       "pre-commit": "npm run test",
-      "commit-msg": "validate-commit-msg"
+      "commit-msg": "./node_modules/.bin/validate-commit-msg"
     },
     "validate-commit-msg": {
       "types": [

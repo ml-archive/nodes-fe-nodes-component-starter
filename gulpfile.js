@@ -6,7 +6,6 @@ var sass 			= require('gulp-sass');
 var autoprefixer 	= require('autoprefixer');
 var cssnano 		= require('cssnano');
 
-
 var templateCache 	= require('gulp-angular-templatecache');
 var ngAnnotate      = require('gulp-ng-annotate');
 
@@ -68,11 +67,11 @@ gulp.task('styles', function() {
 	];
 
 	return gulp.src(config.sass.src)
-		.pipe( sourcemaps.init() )
-		.pipe( sass().on('error', sass.logError) )
-		.pipe( postcss(processors) )
-		.pipe( sourcemaps.write('.') )
-		.pipe( gulp.dest(config.sass.dist) );
+		.pipe(sourcemaps.init())
+		.pipe(sass().on('error', sass.logError))
+		.pipe(postcss(processors))
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest(config.sass.dist));
 });
 
 gulp.task('styles:watch', function() {
@@ -84,26 +83,26 @@ gulp.task('styles:watch', function() {
  */
 gulp.task('ng-annotate', function() {
 	return gulp.src(config.js.dist + '/**/*.js')
-		.pipe( ngAnnotate() )
-		.pipe( gulp.dest(config.js.dist) );
+		.pipe(ngAnnotate())
+		.pipe(gulp.dest(config.js.dist));
 });
 
-gulp.task('angular-templates', function(){
+gulp.task('angular-templates', function() {
 	return gulp.src(config.templates.src)
-		.pipe( templateCache() )
-		.pipe( gulp.dest(config.templates.dist) )
+		.pipe(templateCache())
+		.pipe(gulp.dest(config.templates.dist));
 });
 
 /**
  * Javascript
  */
-gulp.task('babel', function(){
+gulp.task('babel', function() {
 	return gulp.src(config.js.src)
-		.pipe( babel(config.babel) )
-		.pipe( gulp.dest(config.js.dist) );
+		.pipe(babel(config.babel))
+		.pipe(gulp.dest(config.js.dist));
 });
 
-gulp.task('systemJS:dev', function(callback){
+gulp.task('systemJS:dev', function(callback) {
 	var builder = new Builder('./');
 	var entry = config.js.dist + '/' + config.systemJs.entry;
 
@@ -114,15 +113,17 @@ gulp.task('systemJS:dev', function(callback){
 	});
 });
 
-gulp.task('systemJS:dist', function(callback){
+gulp.task('systemJS:dist', function(callback) {
 	var builder = new Builder('./');
 	var entry = config.js.dist + '/' + config.systemJs.entry;
 
-	builder.buildStatic(entry, config.systemJs.production.dist, config.systemJs.production.options).then(function() {
-		callback();
-	}).catch(function(error) {
-		console.log(error);
-	});
+	builder.buildStatic(entry, config.systemJs.production.dist, config.systemJs.production.options)
+		.then(function() {
+			callback();
+		})
+		.catch(function(error) {
+			console.log(error);
+		});
 });
 
 /**
@@ -130,7 +131,7 @@ gulp.task('systemJS:dist', function(callback){
  */
 gulp.task('clean', function() {
 	return gulp.src(config.js.dist, {read: false})
-		.pipe( clean() );
+		.pipe(clean());
 });
 
 gulp.task('build', function() {

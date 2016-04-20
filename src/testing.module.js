@@ -1,2 +1,7 @@
-angular
-	.module('Testing', []);
+(function() {
+	'use strict';
+
+	angular
+		.module('Testing', []);
+
+})();

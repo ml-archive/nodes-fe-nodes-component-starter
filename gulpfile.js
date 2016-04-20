@@ -135,5 +135,5 @@ gulp.task('clean', function() {
 });
 
 gulp.task('build', function() {
-	runSequence('clean', 'babel', 'ng-annotate', ['systemJS:dev', 'systemJS:dist', 'angular-templates'], 'clean');
+	runSequence('clean', 'babel', 'styles', 'ng-annotate', ['systemJS:dev', 'systemJS:dist', 'angular-templates'], 'clean');
 });

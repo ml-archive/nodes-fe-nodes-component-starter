@@ -20,6 +20,8 @@ module.exports = function(config) {
 			'node_modules/angular-mocks/angular-mocks.js',
 			'src/testing.module.js',
 			'src/testing.service.js',
+			'src/testing.directive.js',
+			'src/**/*.template.html',
 			'test/**/*.js'
 		],
 
@@ -32,7 +34,8 @@ module.exports = function(config) {
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
 			'src/**/*.js' : ['babel', 'coverage'],
-			'test/**/*.js': ['babel']
+			'test/**/*.js': ['babel'],
+			'src/**/*.template.html': ['ng-html2js']
 		},
 
 		babelPreprocessor: {

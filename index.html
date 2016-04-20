@@ -7,19 +7,25 @@
     <body ng-app="demoApp">
         <div ng-controller="demoCtrl as demo">
             {{demo.testValue}}
+            <testing-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></testing-directive>
         </div>
 
         <script src="node_modules/angular/angular.js"></script>
+        <script src="src/testing.module.js"></script>
+        <script src="src/testing.directive.js"></script>
         <script>
             (function() {
 
-                angular.module('demoApp', []);
+                angular.module('demoApp', ['Testing']);
 
                 angular
                     .module('demoApp')
                     .controller('demoCtrl', function() {
-                       var vm = this;
+                        var vm = this;
                         vm.testValue = 'Greetings from Angular!';
+                        vm.controllerMethod = function(message) {
+                            console.log(message);
+                        }
                     });
 
             })();

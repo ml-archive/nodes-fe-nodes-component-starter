@@ -1,1 +1,0 @@
-{"version":3,"sources":["component.scss"],"names":[],"mappings":"AAAA,KACC,SAAU,AACV,UAAW,AACX,aAAe,CACf","file":"component.css","sourcesContent":["body {\n\tmargin: 0;\n\tpadding: 0;\n\tfont-size: 2em;\n}"],"sourceRoot":"/source/"}

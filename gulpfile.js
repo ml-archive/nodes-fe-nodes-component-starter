@@ -19,7 +19,11 @@ var sourcemaps 		= require('gulp-sourcemaps');
 var config = {
 	templates: {
 		src: './src/**/*.html',
-		dist: './dist'
+		dist: './tmp',
+		options: {
+			root: 'src',
+			templateHeader: 'export default angular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {'
+		}
 	},
 	js: {
 		src: './src/**/*.js',
@@ -39,10 +43,11 @@ var config = {
 		presets: ['es2015']
 	},
 	systemJs: {
-		entry: 'index.js',
+		entry: './tmp/*.js',
 		dev: {
 			dist: './dist/component.js',
 			options: {
+				sourceMaps: 'inline',
 				runtime: false,
 				minify: false
 			}
@@ -50,6 +55,7 @@ var config = {
 		production: {
 			dist: './dist/component.min.js',
 			options: {
+				sourceMaps: 'inline',
 				runtime: false,
 				minify: true
 			}
@@ -70,12 +76,8 @@ gulp.task('styles', function() {
 		.pipe(sourcemaps.init())
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss(processors))
-		.pipe(sourcemaps.write('.'))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(config.sass.dist));
-});
-
-gulp.task('styles:watch', function() {
-	gulp.watch(config.sass.src, ['styles']);
 });
 
 /**
@@ -89,7 +91,7 @@ gulp.task('ng-annotate', function() {
 
 gulp.task('angular-templates', function() {
 	return gulp.src(config.templates.src)
-		.pipe(templateCache())
+		.pipe(templateCache(config.templates.options))
 		.pipe(gulp.dest(config.templates.dist));
 });
 
@@ -104,9 +106,7 @@ gulp.task('babel', function() {
 
 gulp.task('systemJS:dev', function(callback) {
 	var builder = new Builder('./');
-	var entry = config.js.dist + '/' + config.systemJs.entry;
-
-	builder.buildStatic(entry, config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
+	builder.buildStatic(config.systemJs.entry, config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
 		callback();
 	}).catch(function(error) {
 		console.log(error);
@@ -115,9 +115,8 @@ gulp.task('systemJS:dev', function(callback) {
 
 gulp.task('systemJS:dist', function(callback) {
 	var builder = new Builder('./');
-	var entry = config.js.dist + '/' + config.systemJs.entry;
 
-	builder.buildStatic(entry, config.systemJs.production.dist, config.systemJs.production.options)
+	builder.buildStatic(config.systemJs.entry, config.systemJs.production.dist, config.systemJs.production.options)
 		.then(function() {
 			callback();
 		})
@@ -134,6 +133,19 @@ gulp.task('clean', function() {
 		.pipe(clean());
 });
 
+gulp.task('watch', function() {
+	gulp.watch(config.js.src, ['build:js']);
+	gulp.watch(config.sass.src, ['build:styles']);
+});
+
+gulp.task('build:js', function() {
+	runSequence('clean', 'babel', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+});
+
+gulp.task('build:styles', function() {
+	runSequence('styles');
+});
+
 gulp.task('build', function() {
-	runSequence('clean', 'babel', 'styles', 'ng-annotate', ['systemJS:dev', 'systemJS:dist', 'angular-templates'], 'clean');
+	runSequence('clean', 'babel', 'styles', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
 });

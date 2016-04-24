@@ -8,8 +8,8 @@
     "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "karma": "./node_modules/karma/bin/karma start karma.conf.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "serve:dev": "lite-server -c browsersync.dev.config.js",
-    "serve:build": "lite-server -c browsersync.build.config.js",
+    "serve:dev": "lite-server -c browsersync.dev.config.js | gulp watch",
+    "serve:build": "lite-server -c browsersync.build.config.js | gulp watch",
     "serve": "npm run serve:dev",
     "jscs": "npm run jscs src/*"
   },

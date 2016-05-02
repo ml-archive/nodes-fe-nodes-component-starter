@@ -8,9 +8,10 @@
     "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "karma": "./node_modules/karma/bin/karma start karma.conf.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "serve:dev": "lite-server -c browsersync.dev.config.js",
-    "serve:build": "lite-server -c browsersync.build.config.js",
-    "serve": "npm run serve:dev"
+    "serve:dev": "lite-server -c browsersync.dev.config.js | gulp watch",
+    "serve:build": "lite-server -c browsersync.build.config.js | gulp watch",
+    "serve": "npm run serve:dev",
+    "jscs": "npm run jscs src/*"
   },
   "repository": {
     "type": "git",
@@ -45,11 +46,13 @@
     "gulp-sass": "2.2.0",
     "gulp-sourcemaps": "1.6.0",
     "jasmine-core": "2.4.1",
+    "jscs": "^3.0.3",
     "karma": "0.13.19",
     "karma-babel-preprocessor": "6.0.1",
     "karma-chrome-launcher": "0.2.2",
     "karma-coverage": "0.5.3",
     "karma-jasmine": "0.3.6",
+    "karma-ng-html2js-preprocessor": "^0.2.2",
     "karma-phantomjs-launcher": "0.2.3",
     "lite-server": "^2.2.0",
     "phantomjs": "1.9.19",

@@ -6,7 +6,6 @@ var sass 			= require('gulp-sass');
 var autoprefixer 	= require('autoprefixer');
 var cssnano 		= require('cssnano');
 
-
 var templateCache 	= require('gulp-angular-templatecache');
 var ngAnnotate      = require('gulp-ng-annotate');
 
@@ -20,7 +19,11 @@ var sourcemaps 		= require('gulp-sourcemaps');
 var config = {
 	templates: {
 		src: './src/**/*.html',
-		dist: './dist'
+		dist: './tmp',
+		options: {
+			root: 'src',
+			templateHeader: 'export default angular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {'
+		}
 	},
 	js: {
 		src: './src/**/*.js',
@@ -40,10 +43,11 @@ var config = {
 		presets: ['es2015']
 	},
 	systemJs: {
-		entry: 'index.js',
+		entry: './tmp/*.js',
 		dev: {
 			dist: './dist/component.js',
 			options: {
+				sourceMaps: 'inline',
 				runtime: false,
 				minify: false
 			}
@@ -51,6 +55,7 @@ var config = {
 		production: {
 			dist: './dist/component.min.js',
 			options: {
+				sourceMaps: 'inline',
 				runtime: false,
 				minify: true
 			}
@@ -68,15 +73,11 @@ gulp.task('styles', function() {
 	];
 
 	return gulp.src(config.sass.src)
-		.pipe( sourcemaps.init() )
-		.pipe( sass().on('error', sass.logError) )
-		.pipe( postcss(processors) )
-		.pipe( sourcemaps.write('.') )
-		.pipe( gulp.dest(config.sass.dist) );
-});
-
-gulp.task('styles:watch', function() {
-	gulp.watch(config.sass.src, ['styles']);
+		.pipe(sourcemaps.init())
+		.pipe(sass().on('error', sass.logError))
+		.pipe(postcss(processors))
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest(config.sass.dist));
 });
 
 /**
@@ -84,45 +85,44 @@ gulp.task('styles:watch', function() {
  */
 gulp.task('ng-annotate', function() {
 	return gulp.src(config.js.dist + '/**/*.js')
-		.pipe( ngAnnotate() )
-		.pipe( gulp.dest(config.js.dist) );
+		.pipe(ngAnnotate())
+		.pipe(gulp.dest(config.js.dist));
 });
 
-gulp.task('angular-templates', function(){
+gulp.task('angular-templates', function() {
 	return gulp.src(config.templates.src)
-		.pipe( templateCache() )
-		.pipe( gulp.dest(config.templates.dist) )
+		.pipe(templateCache(config.templates.options))
+		.pipe(gulp.dest(config.templates.dist));
 });
 
 /**
  * Javascript
  */
-gulp.task('babel', function(){
+gulp.task('babel', function() {
 	return gulp.src(config.js.src)
-		.pipe( babel(config.babel) )
-		.pipe( gulp.dest(config.js.dist) );
+		.pipe(babel(config.babel))
+		.pipe(gulp.dest(config.js.dist));
 });
 
-gulp.task('systemJS:dev', function(callback){
+gulp.task('systemJS:dev', function(callback) {
 	var builder = new Builder('./');
-	var entry = config.js.dist + '/' + config.systemJs.entry;
-
-	builder.buildStatic(entry, config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
+	builder.buildStatic(config.systemJs.entry, config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
 		callback();
 	}).catch(function(error) {
 		console.log(error);
 	});
 });
 
-gulp.task('systemJS:dist', function(callback){
+gulp.task('systemJS:dist', function(callback) {
 	var builder = new Builder('./');
-	var entry = config.js.dist + '/' + config.systemJs.entry;
 
-	builder.buildStatic(entry, config.systemJs.production.dist, config.systemJs.production.options).then(function() {
-		callback();
-	}).catch(function(error) {
-		console.log(error);
-	});
+	builder.buildStatic(config.systemJs.entry, config.systemJs.production.dist, config.systemJs.production.options)
+		.then(function() {
+			callback();
+		})
+		.catch(function(error) {
+			console.log(error);
+		});
 });
 
 /**
@@ -130,9 +130,22 @@ gulp.task('systemJS:dist', function(callback){
  */
 gulp.task('clean', function() {
 	return gulp.src(config.js.dist, {read: false})
-		.pipe( clean() );
+		.pipe(clean());
+});
+
+gulp.task('watch', function() {
+	gulp.watch(config.js.src, ['build:js']);
+	gulp.watch(config.sass.src, ['build:styles']);
+});
+
+gulp.task('build:js', function() {
+	runSequence('clean', 'babel', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+});
+
+gulp.task('build:styles', function() {
+	runSequence('styles');
 });
 
 gulp.task('build', function() {
-	runSequence('clean', 'babel', 'ng-annotate', ['systemJS:dev', 'systemJS:dist', 'angular-templates'], 'clean');
+	runSequence('clean', 'babel', 'styles', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
 });

@@ -3,23 +3,32 @@
     <head>
         <meta charset="UTF-8">
         <title>... nodes-component-start ...</title>
+        <link rel="stylesheet" href="dist/component.css">
     </head>
     <body ng-app="demoApp">
         <div ng-controller="demoCtrl as demo">
             {{demo.testValue}}
+            <testing-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></testing-directive>
         </div>
 
         <script src="node_modules/angular/angular.js"></script>
+
+        <!-- component.js will be used on dev, in production it will be rewrited to minfied version component.min.js -->
+        <script src="dist/component.js"></script>
+
         <script>
             (function() {
 
-                angular.module('demoApp', []);
+                angular.module('demoApp', ['Testing']);
 
                 angular
                     .module('demoApp')
                     .controller('demoCtrl', function() {
-                       var vm = this;
+                        var vm = this;
                         vm.testValue = 'Greetings from Angular!';
+                        vm.controllerMethod = function(message) {
+                            console.log(message);
+                        }
                     });
 
             })();

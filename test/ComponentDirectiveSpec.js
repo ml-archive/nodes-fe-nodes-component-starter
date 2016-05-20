@@ -1,10 +1,10 @@
 'use strict';
 
-describe('TestingDirecctive', function() {
+describe('ComponentDirective', function() {
 
-	beforeEach(module('Testing'));
+	beforeEach(module('component'));
 
-	beforeEach(module('src/testing.template.html'));
+	beforeEach(module('src/component.html'));
 
 	var $compile, $rootScope, scope, element;
 
@@ -17,11 +17,10 @@ describe('TestingDirecctive', function() {
 		scope.controllerValue = 'value';
 		scope.controllerMethod = angular.noop;
 
-		var html = '<testing-directive on-event="controllerMethod()" data="controllerValue"></testing-directive>';
+		var html = '<component-directive on-event="controllerMethod()" data="controllerValue"></component-directive>';
 
 		element = $compile(html)(scope);
 		scope.$apply();
-
 	}));
 
 	it('compiles the template with a value from the parent scope', function() {

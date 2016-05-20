@@ -2,6 +2,7 @@
 .DS_Store
 .coveralls.yml
 node_modules
+jspm_packages
 .idea/
 coverage/
 npm-debug.log

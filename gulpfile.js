@@ -9,12 +9,13 @@ var cssnano 		= require('cssnano');
 var templateCache 	= require('gulp-angular-templatecache');
 var ngAnnotate      = require('gulp-ng-annotate');
 
-var babel 			= require('gulp-babel');
 var Builder 		= require('systemjs-builder');
 
 var runSequence 	= require('run-sequence');
 var clean 			= require('gulp-clean');
 var sourcemaps 		= require('gulp-sourcemaps');
+
+var tslint 			= require('gulp-tslint');
 
 var config = {
 	templates: {
@@ -24,6 +25,9 @@ var config = {
 			root: 'src',
 			templateHeader: 'export default angular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {'
 		}
+	},
+	ts: {
+		src: './src/**/*.ts'
 	},
 	js: {
 		src: './src/**/*.js',
@@ -47,7 +51,8 @@ var config = {
 		dev: {
 			dist: './dist/component.js',
 			options: {
-				sourceMaps: 'inline',
+				sourceMaps: true,
+				debug: true,
 				runtime: false,
 				minify: false
 			}
@@ -55,7 +60,7 @@ var config = {
 		production: {
 			dist: './dist/component.min.js',
 			options: {
-				sourceMaps: 'inline',
+				sourceMaps: true,
 				runtime: false,
 				minify: true
 			}
@@ -98,15 +103,11 @@ gulp.task('angular-templates', function() {
 /**
  * Javascript
  */
-gulp.task('babel', function() {
-	return gulp.src(config.js.src)
-		.pipe(babel(config.babel))
-		.pipe(gulp.dest(config.js.dist));
-});
-
 gulp.task('systemJS:dev', function(callback) {
-	var builder = new Builder('./');
-	builder.buildStatic(config.systemJs.entry, config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
+
+	var builder = new Builder('./', './jspm.config.js');
+
+	builder.buildStatic('./src/main.ts', config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
 		callback();
 	}).catch(function(error) {
 		console.log(error);
@@ -114,7 +115,7 @@ gulp.task('systemJS:dev', function(callback) {
 });
 
 gulp.task('systemJS:dist', function(callback) {
-	var builder = new Builder('./');
+	var builder = new Builder('./', './jspm.config.js');
 
 	builder.buildStatic(config.systemJs.entry, config.systemJs.production.dist, config.systemJs.production.options)
 		.then(function() {
@@ -134,12 +135,17 @@ gulp.task('clean', function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch(config.js.src, ['build:js']);
+	gulp.watch(config.ts.src, ['build:ts']);
 	gulp.watch(config.sass.src, ['build:styles']);
+	gulp.watch(config.templates.src, ['build:templates']);
 });
 
-gulp.task('build:js', function() {
-	runSequence('clean', 'babel', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+gulp.task('build:ts', function() {
+	runSequence('clean', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+});
+
+gulp.task('build:templates', function() {
+	runSequence('clean', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
 });
 
 gulp.task('build:styles', function() {
@@ -147,5 +153,5 @@ gulp.task('build:styles', function() {
 });
 
 gulp.task('build', function() {
-	runSequence('clean', 'babel', 'styles', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+	runSequence('clean', 'styles', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
 });

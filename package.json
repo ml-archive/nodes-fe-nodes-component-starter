@@ -4,12 +4,13 @@
   "description": "Boilerplate for Nodes components",
   "main": "index.js",
   "scripts": {
+    "install": "npm install jspm -g && jspm install",
     "commit": "./node_modules/.bin/git-cz",
     "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "karma": "./node_modules/karma/bin/karma start karma.conf.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "serve:dev": "lite-server -c browsersync.dev.config.js | gulp watch",
-    "serve:build": "lite-server -c browsersync.build.config.js | gulp watch",
+    "serve:dev": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.dev.config.js | gulp watch",
+    "serve:build": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.build.config.js | gulp watch",
     "serve": "npm run serve:dev",
     "jscs": "npm run jscs src/*"
   },

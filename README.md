@@ -3,9 +3,9 @@
 
 Opinionated boilerplate for Angular 1.x components which enables you to write and test Angular 1.x components written in typescript & bundled with systemJS (SFX). 
 ## Installation
+This will install all you need to get started. Besides the dependencies in package.json, it will automatically install [jspm](http://jspm.io/) for you globally and install jspm dependencies too.  
 ```bash
 npm install
-jspm install
 ```
 
 ## What does this include

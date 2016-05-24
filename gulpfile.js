@@ -7,13 +7,13 @@ var autoprefixer 	= require('autoprefixer');
 var cssnano 		= require('cssnano');
 
 var templateCache 	= require('gulp-angular-templatecache');
-var ngAnnotate      = require('gulp-ng-annotate');
 
 var Builder 		= require('systemjs-builder');
 
 var runSequence 	= require('run-sequence');
 var clean 			= require('gulp-clean');
 var sourcemaps 		= require('gulp-sourcemaps');
+var inject 			= require('gulp-inject-string');
 
 var tslint 			= require('gulp-tslint');
 
@@ -22,7 +22,9 @@ var config = {
 		src: './src/**/*.html',
 		dist: './tmp',
 		options: {
+			filename: 'templates.ts',
 			root: 'src',
+			standalone: true,
 			templateHeader: 'export default angular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {'
 		}
 	},
@@ -47,7 +49,7 @@ var config = {
 		presets: ['es2015']
 	},
 	systemJs: {
-		entry: './tmp/*.js',
+		entry: './src/main.ts',
 		dev: {
 			dist: './dist/component.js',
 			options: {
@@ -88,12 +90,6 @@ gulp.task('styles', function() {
 /**
  * Angular
  */
-gulp.task('ng-annotate', function() {
-	return gulp.src(config.js.dist + '/**/*.js')
-		.pipe(ngAnnotate())
-		.pipe(gulp.dest(config.js.dist));
-});
-
 gulp.task('angular-templates', function() {
 	return gulp.src(config.templates.src)
 		.pipe(templateCache(config.templates.options))
@@ -107,7 +103,7 @@ gulp.task('systemJS:dev', function(callback) {
 
 	var builder = new Builder('./', './jspm.config.js');
 
-	builder.buildStatic('./src/main.ts', config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
+	builder.buildStatic(config.systemJs.entry, config.systemJs.dev.dist, config.systemJs.dev.options).then(function() {
 		callback();
 	}).catch(function(error) {
 		console.log(error);
@@ -117,13 +113,12 @@ gulp.task('systemJS:dev', function(callback) {
 gulp.task('systemJS:dist', function(callback) {
 	var builder = new Builder('./', './jspm.config.js');
 
-	builder.buildStatic(config.systemJs.entry, config.systemJs.production.dist, config.systemJs.production.options)
-		.then(function() {
-			callback();
-		})
-		.catch(function(error) {
-			console.log(error);
-		});
+	builder.buildStatic(config.systemJs.entry, config.systemJs.production.dist, config.systemJs.production.options).then(function() {
+		callback();
+	})
+	.catch(function(error) {
+		console.log(error);
+	});
 });
 
 /**
@@ -134,6 +129,18 @@ gulp.task('clean', function() {
 		.pipe(clean());
 });
 
+gulp.task('inject-templates-module', function(){
+	gulp.src(config.systemJs.entry)
+		.pipe(inject.prepend("import '../tmp/templates'; \n"))
+		.pipe(gulp.dest('./src'));
+});
+
+gulp.task('remove-injection-templates-module', function(){
+	gulp.src(config.systemJs.entry)
+		.pipe(inject.replace("import '../tmp/templates'; \n", ""))
+		.pipe(gulp.dest('./src'));
+});
+
 gulp.task('watch', function() {
 	gulp.watch(config.ts.src, ['build:ts']);
 	gulp.watch(config.sass.src, ['build:styles']);
@@ -141,11 +148,11 @@ gulp.task('watch', function() {
 });
 
 gulp.task('build:ts', function() {
-	runSequence('clean', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+	runSequence('clean', 'angular-templates', 'inject-templates-module', ['systemJS:dev', 'systemJS:dist'], 'remove-injection-templates-module', 'clean');
 });
 
 gulp.task('build:templates', function() {
-	runSequence('clean', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+	runSequence('clean', 'angular-templates', 'inject-templates-module', ['systemJS:dev', 'systemJS:dist'], 'remove-injection-templates-module', 'clean');
 });
 
 gulp.task('build:styles', function() {
@@ -153,5 +160,5 @@ gulp.task('build:styles', function() {
 });
 
 gulp.task('build', function() {
-	runSequence('clean', 'styles', 'ng-annotate', 'angular-templates', ['systemJS:dev', 'systemJS:dist'], 'clean');
+	runSequence('clean', 'styles', 'angular-templates', 'inject-templates-module', ['systemJS:dev', 'systemJS:dist'], 'remove-injection-templates-module', 'clean');
 });

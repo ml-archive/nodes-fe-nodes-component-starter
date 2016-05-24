@@ -1,13 +1,9 @@
 namespace component {
 	'use strict';
-
-	angular.module('component', [
+	
+	const dependencies = [
 		'templates'
-	]);
+	];
 
-	/**
-	 * Used by gulp-angular-templates
-	 * to inline the templates in the production code
-	 */
-	angular.module('templates', []);
+	angular.module('component', dependencies);
 }

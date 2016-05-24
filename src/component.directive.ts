@@ -6,27 +6,24 @@ namespace component {
         data: any
     }
 
-    class ComponentDirective {
-        static $inject: Array<string> = ['ComponentService'];
+    class ComponentDirective implements ng.IDirective {
+        static $inject: Array<string> = [];
         constructor() {}
 
         static instance(): ng.IDirective {
             return new ComponentDirective();
         }
 
-        bindToController: boolean = false;
+        bindToController: boolean = true;
         link: (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => void = this.linkFn;
-        controller: (ComponentService: any) => void = this.controllerFn;
+        controller: ComponentDirectiveController = ComponentDirectiveController;
         restrict: string = 'EA';
         templateUrl: string = 'src/component.html';
+        controllerAs: string = 'ComponentDirective';
         scope: IComponentDirectiveScope = {
             event: '&onEvent',
             data: '='
         };
-
-        private controllerFn(ComponentService: IComponentService) {
-            console.log( 'Injected service:', ComponentService.index() );
-        }
 
         private linkFn(scope: any, element: any, attrs: any) {
             scope.internalValue = true;
@@ -34,6 +31,13 @@ namespace component {
             scope.internalDirectiveMethod = () => {
                 scope.internalValue = !scope.internalValue;
             }
+        }
+    }
+
+    class ComponentDirectiveController {
+        static $inject: Array<string> = ['ComponentService'];
+        constructor(private ComponentService: any) {
+            console.log( 'Injected service:', this.ComponentService.index() );
         }
     }
 

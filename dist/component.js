@@ -5,16 +5,12 @@
 $__System.register("2", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
-  var component;
   return {
     setters: [],
     execute: function() {
-      var component;
-      (function(component) {
-        'use strict';
-        angular.module('component', ['templates']);
-        angular.module('templates', []);
-      })(component || (component = {}));
+      exports_1("default", angular.module("templates", []).run(["$templateCache", function($templateCache) {
+        $templateCache.put("src/component.html", "<hr />\n<button ng-click=\"ComponentDirective.event({message: \'from directive\'})\">Trigger outside method (controller)</button>\n<p>\n    Data from the outside: {{ComponentDirective.data}}\n</p>\n<p>\n    Internal directive data: {{internalValue}}\n    <button ng-click=\"internalDirectiveMethod()\">Trigger internal method</button>\n</p>");
+      }]));
     }
   };
 });
@@ -28,8 +24,26 @@ $__System.register("3", [], function(exports_1, context_1) {
     execute: function() {
       var component;
       (function(component) {
+        'use strict';
+        var dependencies = ['templates'];
+        angular.module('component', dependencies);
+      })(component || (component = {}));
+    }
+  };
+});
+
+$__System.register("4", [], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var component;
+  return {
+    setters: [],
+    execute: function() {
+      var component;
+      (function(component) {
+        config.$inject = ['componentProvider'];
         function config(componentProvider) {
-          componentProvider.configure({test: 'blabla'});
+          componentProvider.configure({test: 'Testing Configure Function'});
         }
         angular.module('component').config(config);
       })(component || (component = {}));
@@ -37,7 +51,7 @@ $__System.register("3", [], function(exports_1, context_1) {
   };
 });
 
-$__System.register("4", [], function(exports_1, context_1) {
+$__System.register("5", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var component;
@@ -71,7 +85,7 @@ $__System.register("4", [], function(exports_1, context_1) {
   };
 });
 
-$__System.register("5", [], function(exports_1, context_1) {
+$__System.register("6", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var component;
@@ -94,49 +108,6 @@ $__System.register("5", [], function(exports_1, context_1) {
         }());
         component.ComponentFilter = ComponentFilter;
         angular.module('component').filter('componentFilter', ComponentFilter.instance);
-      })(component || (component = {}));
-    }
-  };
-});
-
-$__System.register("6", [], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var component;
-  return {
-    setters: [],
-    execute: function() {
-      var component;
-      (function(component) {
-        'use strict';
-        var ComponentDirective = (function() {
-          function ComponentDirective() {
-            this.bindToController = false;
-            this.link = this.linkFn;
-            this.controller = this.controllerFn;
-            this.restrict = 'EA';
-            this.templateUrl = 'src/component.html';
-            this.scope = {
-              event: '&onEvent',
-              data: '='
-            };
-          }
-          ComponentDirective.instance = function() {
-            return new ComponentDirective();
-          };
-          ComponentDirective.prototype.controllerFn = function(ComponentService) {
-            console.log('Injected service:', ComponentService.index());
-          };
-          ComponentDirective.prototype.linkFn = function(scope, element, attrs) {
-            scope.internalValue = true;
-            scope.internalDirectiveMethod = function() {
-              scope.internalValue = !scope.internalValue;
-            };
-          };
-          ComponentDirective.$inject = ['ComponentService'];
-          return ComponentDirective;
-        }());
-        angular.module('component').directive('componentDirective', ComponentDirective.instance);
       })(component || (component = {}));
     }
   };
@@ -183,14 +154,52 @@ $__System.register("7", [], function(exports_1, context_1) {
 });
 
 $__System.register("8", [], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
-    return {
-        setters:[],
-        execute: function() {
-            exports_1("default",angular.module("templates").run(["$templateCache", function ($templateCache) { $templateCache.put("src/component.html", "<hr />\n<button ng-click=\"event({message: \'from directive\'})\">Trigger outside method (controller)</button>\n<p>\n    Data from the outside: {{data}}\n</p>\n<p>\n    Internal directive data: {{internalValue}}\n    <button ng-click=\"internalDirectiveMethod()\">Trigger internal method</button>\n</p>"); }]));
-        }
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var component;
+  return {
+    setters: [],
+    execute: function() {
+      var component;
+      (function(component) {
+        'use strict';
+        var ComponentDirective = (function() {
+          function ComponentDirective() {
+            this.bindToController = true;
+            this.link = this.linkFn;
+            this.controller = ComponentDirectiveController;
+            this.restrict = 'EA';
+            this.templateUrl = 'src/component.html';
+            this.controllerAs = 'ComponentDirective';
+            this.scope = {
+              event: '&onEvent',
+              data: '='
+            };
+          }
+          ComponentDirective.instance = function() {
+            return new ComponentDirective();
+          };
+          ComponentDirective.prototype.linkFn = function(scope, element, attrs) {
+            scope.internalValue = true;
+            scope.internalDirectiveMethod = function() {
+              scope.internalValue = !scope.internalValue;
+            };
+          };
+          ComponentDirective.$inject = [];
+          return ComponentDirective;
+        }());
+        var ComponentDirectiveController = (function() {
+          function ComponentDirectiveController(ComponentService) {
+            this.ComponentService = ComponentService;
+            console.log('Injected service:', this.ComponentService.index());
+          }
+          ComponentDirectiveController.$inject = ['ComponentService'];
+          return ComponentDirectiveController;
+        }());
+        angular.module('component').directive('componentDirective', ComponentDirective.instance);
+      })(component || (component = {}));
     }
+  };
 });
 
 $__System.register("1", ["2", "3", "4", "5", "6", "7", "8"], function(exports_1, context_1) {

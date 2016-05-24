@@ -19,6 +19,14 @@ System.config({
           "loader": "ts"
         }
       }
+    },
+    "tmp": {
+      "defaultExtension": "ts",
+      "meta": {
+        "*.ts": {
+          "loader": "ts"
+        }
+      }
     }
   },
 

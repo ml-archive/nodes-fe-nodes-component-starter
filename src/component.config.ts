@@ -1,7 +1,9 @@
 namespace component {
 
+    config.$inject = ['componentProvider'];
+
     function config(componentProvider: IComponentProvider) {
-        componentProvider.configure({test: 'blabla'});
+        componentProvider.configure({test: 'Testing Configure Function'});
     }
 
     angular

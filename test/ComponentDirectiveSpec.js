@@ -2,7 +2,10 @@
 
 describe('ComponentDirective', function() {
 
-	beforeEach(module('component'));
+	beforeEach(function() {
+		angular.module('templates', []);
+		module('component');
+	});
 
 	beforeEach(module('src/component.html'));
 
@@ -20,10 +23,14 @@ describe('ComponentDirective', function() {
 		var html = '<component-directive on-event="controllerMethod()" data="controllerValue"></component-directive>';
 
 		element = $compile(html)(scope);
+
 		scope.$apply();
 	}));
 
 	it('compiles the template with a value from the parent scope', function() {
+
+		console.log( element.html() );
+		
 		expect(element.html()).toContain('value');
 	});
 

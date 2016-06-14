@@ -17,8 +17,12 @@ var inject 			= require('gulp-inject-string');
 
 var tslint 			= require('gulp-tslint');
 
+var path			= require('path');
+var fs 				= require('fs');
+
 var config = {
 	templates: {
+		enabled: true,
 		src: './src/**/*.html',
 		dist: './tmp',
 		options: {
@@ -49,7 +53,7 @@ var config = {
 		presets: ['es2015']
 	},
 	systemJs: {
-		entry: './src/main.ts',
+		entry: './tmp/main.ts',
 		dev: {
 			dist: './dist/component.js',
 			options: {
@@ -91,6 +95,8 @@ gulp.task('styles', function() {
  * Angular
  */
 gulp.task('angular-templates', function() {
+	if(!config.templates.enabled || !config.templates.exists) return;
+
 	return gulp.src(config.templates.src)
 		.pipe(templateCache(config.templates.options))
 		.pipe(gulp.dest(config.templates.dist));
@@ -115,8 +121,7 @@ gulp.task('systemJS:dist', function(callback) {
 
 	builder.buildStatic(config.systemJs.entry, config.systemJs.production.dist, config.systemJs.production.options).then(function() {
 		callback();
-	})
-	.catch(function(error) {
+	}).catch(function(error) {
 		console.log(error);
 	});
 });
@@ -129,36 +134,93 @@ gulp.task('clean', function() {
 		.pipe(clean());
 });
 
+gulp.task('check-for-templates', function(done) {
+	if(!config.templates.hasOwnProperty('exists') && config.templates.enabled) {
+		_fileTypeExists('./src', /\.html$/, function(exists) {
+			config.templates.exists = exists;
+			done();
+		});
+	} else {
+		done();
+	}
+});
+
 gulp.task('inject-templates-module', function(){
-	gulp.src(config.systemJs.entry)
-		.pipe(inject.prepend("import '../tmp/templates'; \n"))
-		.pipe(gulp.dest('./src'));
+	if(!config.templates.enabled || !config.templates.exists) return;
+
+	return gulp.src(config.systemJs.entry)
+		.pipe(inject.prepend("import './templates'; \n"))
+		.pipe(gulp.dest('./tmp'));
+
 });
 
 gulp.task('remove-injection-templates-module', function(){
-	gulp.src(config.systemJs.entry)
-		.pipe(inject.replace("import '../tmp/templates'; \n", ""))
-		.pipe(gulp.dest('./src'));
+	if(!config.templates.enabled || !config.templates.exists) return;
+
+	return gulp.src(config.systemJs.entry)
+		.pipe(inject.replace("import './templates'; \n", ""))
+		.pipe(gulp.dest('./tmp'));
 });
 
 gulp.task('watch', function() {
-	gulp.watch(config.ts.src, ['build:ts']);
 	gulp.watch(config.sass.src, ['build:styles']);
-	gulp.watch(config.templates.src, ['build:templates']);
+	gulp.watch([
+		config.ts.src,
+		config.templates.src
+	], ['bundle']);
 });
 
-gulp.task('build:ts', function() {
-	runSequence('clean', 'angular-templates', 'inject-templates-module', ['systemJS:dev', 'systemJS:dist'], 'remove-injection-templates-module', 'clean');
-});
-
-gulp.task('build:templates', function() {
-	runSequence('clean', 'angular-templates', 'inject-templates-module', ['systemJS:dev', 'systemJS:dist'], 'remove-injection-templates-module', 'clean');
+gulp.task('copy-to-tmp', function() {
+	return gulp.src('./src/**/*')
+		.pipe(gulp.dest('./tmp'));
 });
 
 gulp.task('build:styles', function() {
-	runSequence('styles');
+	runSequence('clean', 'styles', 'clean');
+});
+
+gulp.task('bundle', function() {
+	runSequence('clean', 'check-for-templates', 'copy-to-tmp', 'angular-templates', 'inject-templates-module', ['systemJS:dev', 'systemJS:dist'], 'remove-injection-templates-module', 'clean');
 });
 
 gulp.task('build', function() {
-	runSequence('clean', 'styles', 'angular-templates', 'inject-templates-module', ['systemJS:dev', 'systemJS:dist'], 'remove-injection-templates-module', 'clean');
+	runSequence(['bundle', 'styles']);
 });
+
+/**
+ * Checks if certain file-type exists in path recursively
+ * @param startPath
+ * @param filter
+ * @param callback
+ */
+function _fileTypeExists(startPath, filter, callback) {
+
+	var result 	= false;
+
+	function lookupFiles(dir) {
+
+		if ( !fs.existsSync(dir) ) {
+			console.log('Path does not exists', startPath);
+			return;
+		}
+
+		var files = fs.readdirSync(dir);
+
+		files.forEach(function(filename) {
+
+			var src 		= path.join(dir, filename);
+			var stat 		= fs.lstatSync(src);
+
+			if ( stat.isDirectory() ){
+				lookupFiles(src, filter);
+			}
+			else if ( filter.test(filename) ) {
+				result = true;
+			}
+		});
+
+	}
+
+	lookupFiles(startPath);
+	callback(result);
+}

@@ -7,3 +7,5 @@ jspm_packages
 coverage/
 npm-debug.log
 tmp/
+typings/
+dist/

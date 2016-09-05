@@ -12,7 +12,8 @@
     "serve:dev": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.dev.config.js | node ./node_modules/gulp/bin/gulp watch",
     "serve:build": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.build.config.js | node ./node_modules/gulp/bin/gulp watch",
     "serve": "npm run serve:dev",
-    "jscs": "npm run jscs src/*"
+    "jscs": "npm run jscs src/*",
+    "postinstall": "jspm install && typings install"
   },
   "repository": {
     "type": "git",

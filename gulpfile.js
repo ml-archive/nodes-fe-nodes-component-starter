@@ -215,7 +215,6 @@ gulp.task('docs', function(cb) {
 	runSequence(
 		'docs:styles',
 		'docs:useref',
-		'docs:gh-pages',
 		cb
 	);
 });

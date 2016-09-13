@@ -7,11 +7,21 @@
         <link rel="stylesheet" href="docs.css">
         
         <link rel="stylesheet" href="component.css">
+    
+        <style>
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+                display: none !important;
+            }
+        </style>
     </head>
-    <body ng-app="demoApp">
-        <div ng-controller="demoController as demo">
-            {{demo.testValue | componentFilter}}
-            <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
+    <body ng-app="demoApp" ng-cloak>
+        <div class="row" ng-controller="demoController as demo">
+            <div class="small-12 large-6 columns">
+                {{demo.testValue | componentFilter}}
+            </div>
+            <div class="small-12 large-6 columns">
+                <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
+            </div>
         </div>
     
         <script src="angular.js"></script>

@@ -1,9 +1,10 @@
 module.exports = {
 	files: ['./dist/component.css', './dist/component.min.js', './index.html'],
 	server: {
-		baseDir: './',
+		baseDir: './docs',
 		routes: {
-			'/node_modules': 'node_modules'
+			'/node_modules': 'node_modules',
+			'/dist': 'dist'
 		}
 	},
 	rewriteRules: [

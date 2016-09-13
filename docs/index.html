@@ -2,19 +2,30 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>nodes-component-start</title>
+        <title>nodes-component-starter</title>
+    
+        <!-- build:css(./docs) docs.css -->
+        <link rel="stylesheet" href="docs.css">
+        <!-- endbuild -->
+        
+        <!-- build:css component.css -->
         <link rel="stylesheet" href="dist/component.css">
+        <!-- endbuild -->
     </head>
     <body ng-app="demoApp">
         <div ng-controller="demoController as demo">
             {{demo.testValue | componentFilter}}
             <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
         </div>
-
+    
+        <!-- build:js angular.js -->
         <script src="node_modules/angular/angular.js"></script>
+        <!-- endbuild -->
 
         <!-- component.js will be used on dev, in production it will be rewrited to minfied version component.min.js -->
+        <!-- build:js component.js -->
         <script src="dist/component.js"></script>
+        <!-- endbuild -->
 
         <script>
             (function() {

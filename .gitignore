@@ -3,8 +3,10 @@
 .coveralls.yml
 node_modules
 jspm_packages
-.idea/
-coverage/
+.idea
+coverage
 npm-debug.log
-tmp/
-typings/
+tmp
+typings
+.publish
+release

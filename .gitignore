@@ -8,3 +8,5 @@ coverage
 npm-debug.log
 tmp
 typings
+.publish
+release

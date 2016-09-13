@@ -20,6 +20,10 @@ var tslint 			= require('gulp-tslint');
 var path			= require('path');
 var fs 				= require('fs');
 
+var useref = require('gulp-useref');
+var cdnizer = require('gulp-cdnizer');
+var ghPages = require('gulp-gh-pages');
+
 var config = {
 	templates: {
 		enabled: true,
@@ -41,7 +45,8 @@ var config = {
 	},
 	sass: {
 		src: './src/**/*.scss',
-		dist: './dist'
+		dist: './dist',
+		docs: './docs'
 	},
 	autoprefixer: {
 		browsers: ['last 2 versions']
@@ -71,6 +76,9 @@ var config = {
 				minify: true
 			}
 		}
+	},
+	ghPages: {
+		folder: './release'
 	}
 };
 
@@ -99,7 +107,7 @@ gulp.task('angular-templates', function() {
 
 	return gulp.src(config.templates.src)
 		.pipe(templateCache(config.templates.options))
-		.pipe(gulp.dest(config.templates.dist));
+		.pipe(gulp.dest(config.templates.dist))
 });
 
 /**
@@ -163,6 +171,7 @@ gulp.task('remove-injection-templates-module', function(){
 });
 
 gulp.task('watch', function() {
+	gulp.watch('./docs/styles/**/*.scss', ['docs:styles']);
 	gulp.watch(config.sass.src, ['build:styles']);
 	gulp.watch([
 		config.ts.src,
@@ -173,6 +182,42 @@ gulp.task('watch', function() {
 gulp.task('copy-to-tmp', function() {
 	return gulp.src('./src/**/*')
 		.pipe(gulp.dest('./tmp'));
+});
+
+gulp.task('docs:styles', function() {
+	var processors = [
+		autoprefixer(config.autoprefixer),
+		cssnano(config.cssnano)
+	];
+	
+	return gulp.src('./docs/styles/docs.scss')
+		.pipe(sourcemaps.init())
+		.pipe(sass({
+			includePaths: './node_modules/foundation-sites/scss'
+		}).on('error', sass.logError))
+		.pipe(postcss(processors))
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest('./docs'));
+});
+
+gulp.task('docs:useref', function() {
+	return gulp.src('./docs/index.html')
+		.pipe(useref({
+			searchPath: '.'
+		}))
+		.pipe(gulp.dest('./release'));
+});
+gulp.task('docs:gh-pages', function() {
+	return gulp.src('./release/**/*')
+		.pipe(ghPages());
+});
+gulp.task('docs', function(cb) {
+	runSequence(
+		'docs:styles',
+		'docs:useref',
+		'docs:gh-pages',
+		cb
+	);
 });
 
 gulp.task('build:styles', function() {

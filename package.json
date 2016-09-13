@@ -14,7 +14,7 @@
     "serve:docs": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.docs.config.js | node ./node_modules/gulp/bin/gulp watch",
     "serve": "npm run serve:dev",
     "jscs": "npm run jscs src/*",
-    "postinstall": "jspm install && typings install",
+    "setup": "jspm install && typings install",
     "docs": "node ./node_modules/gulp/bin/gulp docs"
   },
   "repository": {

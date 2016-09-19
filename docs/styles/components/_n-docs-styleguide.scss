@@ -1,0 +1,154 @@
+.n-docs-palettes {
+	@include palette-town($primary-color, all);
+
+	.n-docs-palettes_palette {
+		height: 200px;
+	}
+
+	$colors: (
+			primary: (
+					primary,
+					$color-primary,
+					$color-primary-darkest,
+					$color-primary-darker,
+					$color-primary-dark,
+					$color-primary-light,
+					$color-primary-lighter,
+					$color-primary-lightest
+			),
+			complement: (
+					complement,
+					$color-complement,
+					$color-complement-darkest,
+					$color-complement-darker,
+					$color-complement-dark,
+					$color-complement-light,
+					$color-complement-lighter,
+					$color-complement-lightest
+			),
+			triad-1: (
+					triad-1,
+					$color-triad-1,
+					$color-triad-1-darkest,
+					$color-triad-1-darker,
+					$color-triad-1-dark,
+					$color-triad-1-light,
+					$color-triad-1-lighter,
+					$color-triad-1-lightest
+			),
+			triad-2: (
+					triad-2,
+					$color-triad-2,
+					$color-triad-2-darkest,
+					$color-triad-2-darker,
+					$color-triad-2-dark,
+					$color-triad-2-light,
+					$color-triad-2-lighter,
+					$color-triad-2-lightest
+			),
+			triad-3: (
+					triad-3,
+					$color-triad-3,
+					$color-triad-3-darkest,
+					$color-triad-3-darker,
+					$color-triad-3-dark,
+					$color-triad-3-light,
+					$color-triad-3-lighter,
+					$color-triad-3-lightest
+			),
+			tetrad-1: (
+					tetrad-1,
+					$color-tetrad-1,
+					$color-tetrad-1-darkest,
+					$color-tetrad-1-darker,
+					$color-tetrad-1-dark,
+					$color-tetrad-1-light,
+					$color-tetrad-1-lighter,
+					$color-tetrad-1-lightest
+			),
+			tetrad-2: (
+					tetrad-2,
+					$color-tetrad-2,
+					$color-tetrad-2-darkest,
+					$color-tetrad-2-darker,
+					$color-tetrad-2-dark,
+					$color-tetrad-2-light,
+					$color-tetrad-2-lighter,
+					$color-tetrad-2-lightest
+			),
+			tetrad-3: (
+					tetrad-3,
+					$color-tetrad-3,
+					$color-tetrad-3-darkest,
+					$color-tetrad-3-darker,
+					$color-tetrad-3-dark,
+					$color-tetrad-3-light,
+					$color-tetrad-3-lighter,
+					$color-tetrad-3-lightest
+			),
+			tetrad-4: (
+					tetrad-4,
+					$color-tetrad-4,
+					$color-tetrad-4-darkest,
+					$color-tetrad-4-darker,
+					$color-tetrad-4-dark,
+					$color-tetrad-4-light,
+					$color-tetrad-4-lighter,
+					$color-tetrad-4-lightest
+			),
+			split-1: (
+					split-1,
+					$color-split-1,
+					$color-split-1-darkest,
+					$color-split-1-darker,
+					$color-split-1-dark,
+					$color-split-1-light,
+					$color-split-1-lighter,
+					$color-split-1-lightest
+			),
+			split-2: (
+					split-2,
+					$color-split-2,
+					$color-split-2-darkest,
+					$color-split-2-darker,
+					$color-split-2-dark,
+					$color-split-2-light,
+					$color-split-2-lighter,
+					$color-split-2-lightest
+			),
+			shade: (
+					shade,
+					$color-shade,
+					$color-shade-darkest,
+					$color-shade-darker,
+					$color-shade-dark,
+					$color-shade-light,
+					$color-shade-lighter,
+					$color-shade-lightest
+			)
+	);
+
+	@each $color, $color in $colors {
+		.background--#{nth($color, 1)} {
+			background-color: #{nth($color, 2)};
+			&-darkest {
+				background-color: #{nth($color, 3)};
+			}
+			&-darker {
+				background-color: #{nth($color, 4)};
+			}
+			&-dark {
+				background-color: #{nth($color, 5)};
+			}
+			&-light {
+				background-color: #{nth($color, 6)};
+			}
+			&-lighter {
+				background-color: #{nth($color, 7)};
+			}
+			&-lightest {
+				background-color: #{nth($color, 8)};
+			}
+		}
+	}
+}

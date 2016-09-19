@@ -1,6 +1,8 @@
 @import "variables";
 @import "foundation";
 
+@import "mixins";
+
 @include foundation-global-styles;
 
 @include foundation-flex-grid;
@@ -41,3 +43,9 @@
 @include foundation-visibility-classes;
 @include foundation-float-classes;
 @include foundation-flex-classes;
+
+@import "components/n-docs-header";
+@import "components/n-docs-hero";
+@import "components/n-docs-navbar";
+
+@import "components/n-docs-styleguide";

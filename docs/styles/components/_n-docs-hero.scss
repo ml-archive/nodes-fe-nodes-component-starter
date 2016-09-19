@@ -1,0 +1,22 @@
+.n-docs-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	box-shadow: inset 0 0 0 1px red;
+}
+
+.n-docs-hero__title {
+	margin: 0;
+
+	color: $white;
+}
+
+.n-docs-hero__scroll-anchor {
+
+}
+
+.n-docs-hero__repository-link {
+
+}

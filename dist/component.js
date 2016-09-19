@@ -10,7 +10,7 @@ $__System.register("2", [], function (exports_1, context_1) {
         setters: [],
         execute: function () {
             exports_1("default", angular.module("templates", []).run(["$templateCache", function ($templateCache) {
-                $templateCache.put('src/component.html', '<button class="button success" ng-click="ComponentDirective.event({message: \'from directive\'})">Trigger outside method (controller)</button>\n<p>\n    Data from the outside: {{ComponentDirective.data}}\n</p>\n<p>\n    Internal directive data: {{internalValue}}\n    <button class="button" ng-click="internalDirectiveMethod()">Trigger internal method</button>\n</p>');
+                $templateCache.put('src/component.html', '<div class="component">\n    <button class="button success" ng-click="ComponentDirective.event({message: \'from directive\'})">Trigger outside method (controller)</button>\n    <p>\n        Data from the outside: {{ComponentDirective.data}}\n    </p>\n    <p>\n        Internal directive data: {{internalValue}}\n        <button class="button" ng-click="internalDirectiveMethod()">Trigger internal method</button>\n    </p>\n</div>');
             }]));
         }
     };

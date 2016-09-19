@@ -1,8 +1,10 @@
-<button class="button success" ng-click="ComponentDirective.event({message: 'from directive'})">Trigger outside method (controller)</button>
-<p>
-    Data from the outside: {{ComponentDirective.data}}
-</p>
-<p>
-    Internal directive data: {{internalValue}}
-    <button class="button" ng-click="internalDirectiveMethod()">Trigger internal method</button>
-</p>
+<div class="component">
+    <button class="button success" ng-click="ComponentDirective.event({message: 'from directive'})">Trigger outside method (controller)</button>
+    <p>
+        Data from the outside: {{ComponentDirective.data}}
+    </p>
+    <p>
+        Internal directive data: {{internalValue}}
+        <button class="button" ng-click="internalDirectiveMethod()">Trigger internal method</button>
+    </p>
+</div>

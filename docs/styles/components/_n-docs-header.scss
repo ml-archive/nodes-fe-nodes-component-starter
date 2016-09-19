@@ -1,0 +1,28 @@
+.n-docs-header {
+	@include flex-grid-row();
+	height: 200px;
+
+	position: relative;
+
+	@include breakpoint(medium) {
+		height: 40vh;
+	}
+	@include breakpoint(large) {
+		height: 80vh;
+	}
+
+	.n-docs-navbar,
+	.n-docs-hero {
+		@include flex-grid-column($columns: 12);
+
+		z-index: 1;
+	}
+}
+.n-docs-header__canvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 0;
+}

@@ -19,12 +19,259 @@
         </style>
     </head>
     <body ng-app="demoApp" ng-cloak>
-        <div class="row" ng-controller="demoController as demo">
-            <div class="small-12 large-6 columns">
-                {{demo.testValue | componentFilter}}
+        
+        
+            <div class="n-docs-header">
+                
+                <canvas class="n-docs-header__canvas" id="heroGradientCanvas"></canvas>
+                
+                <div class="n-docs-navbar">
+                    <h1 class="n-docs-navbar__title">
+                        nodes-component-starter
+                    </h1>
+                    <a href="#" class="n-docs-navbar__repository-link">
+                        G
+                    </a>
+                </div>
+        
+                <div class="n-docs-hero">
+                    <h1 class="n-docs-hero__title">
+                        nodes-component-starter
+                    </h1>
+                    <a href="#getStarted" class="n-docs-hero__scroll-anchor">Get started</a>
+                    <a href="#" class="n-docs-hero__repository-link">
+                        G
+                    </a>
+                </div>
             </div>
-            <div class="small-12 large-6 columns">
-                <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
+        
+        
+        <div class="n-docs-repository">
+            <div class="row">
+                .n-docs-repository
+            </div>
+        </div>
+    
+        <!--<div class="n-docs-styleguide">
+            <div class="n-docs-palettes">
+                <div class="row">
+                    <div class="background--primary-darkest columns">
+                        <p>$color-primary-darkest</p>
+                    </div>
+                    <div class="background--primary-darker columns">
+                        <p>$color-primary-darker</p>
+                    </div>
+                    <div class="background--primary-dark columns">
+                        <p>$color-primary-dark</p>
+                    </div>
+                    <div class="background--primary columns">
+                        <p>$color-primary</p>
+                    </div>
+                    <div class="background--primary-light columns">
+                        <p>$color-primary-light</p>
+                    </div>
+                    <div class="background--primary-lighter columns">
+                        <p>$color-primary-lighter</p>
+                    </div>
+                    <div class="background--primary-lightest columns">
+                        <p>$color-primary-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--tetrad-2-darkest columns">
+                        <p>$color-tetrad-2-darkest</p>
+                    </div>
+                    <div class="background--tetrad-2-darker columns">
+                        <p>$color-tetrad-2-darker</p>
+                    </div>
+                    <div class="background--tetrad-2-dark columns">
+                        <p>$color-tetrad-2-dark</p>
+                    </div>
+                    <div class="background--tetrad-2 columns">
+                        <p>$color-tetrad-2</p>
+                    </div>
+                    <div class="background--tetrad-2-light columns">
+                        <p>$color-tetrad-2-light</p>
+                    </div>
+                    <div class="background--tetrad-2-lighter columns">
+                        <p>$color-tetrad-2-lighter</p>
+                    </div>
+                    <div class="background--tetrad-2-lightest columns">
+                        <p>$color-tetrad-2-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--triad-2-darkest columns">
+                        <p>$color-triad-2-darkest</p>
+                    </div>
+                    <div class="background--triad-2-darker columns">
+                        <p>$color-triad-2-darker</p>
+                    </div>
+                    <div class="background--triad-2-dark columns">
+                        <p>$color-triad-2-dark</p>
+                    </div>
+                    <div class="background--triad-2 columns">
+                        <p>$color-triad-2</p>
+                    </div>
+                    <div class="background--triad-2-light columns">
+                        <p>$color-triad-2-light</p>
+                    </div>
+                    <div class="background--triad-2-lighter columns">
+                        <p>$color-triad-2-lighter</p>
+                    </div>
+                    <div class="background--triad-2-lightest columns">
+                        <p>$color-triad-2-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--split-1-darkest columns">
+                        <p>$color-split-1-darkest</p>
+                    </div>
+                    <div class="background--split-1-darker columns">
+                        <p>$color-split-1-darker</p>
+                    </div>
+                    <div class="background--split-1-dark columns">
+                        <p>$color-split-1-dark</p>
+                    </div>
+                    <div class="background--split-1 columns">
+                        <p>$color-split-1</p>
+                    </div>
+                    <div class="background--split-1-light columns">
+                        <p>$color-split-1-light</p>
+                    </div>
+                    <div class="background--split-1-lighter columns">
+                        <p>$color-split-1-lighter</p>
+                    </div>
+                    <div class="background--split-1-lightest columns">
+                        <p>$color-split-1-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--complement-darkest columns">
+                        <p>$color-complement-darkest</p>
+                    </div>
+                    <div class="background--complement-darker columns">
+                        <p>$color-complement-darker</p>
+                    </div>
+                    <div class="background--complement-dark columns">
+                        <p>$color-complement-dark</p>
+                    </div>
+                    <div class="background--complement columns">
+                        <p>$color-complement</p>
+                    </div>
+                    <div class="background--complement-light columns">
+                        <p>$color-complement-light</p>
+                    </div>
+                    <div class="background--complement-lighter columns">
+                        <p>$color-complement-lighter</p>
+                    </div>
+                    <div class="background--complement-lightest columns">
+                        <p>$color-complement-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--split-2-darkest columns">
+                        <p>$color-split-2-darkest</p>
+                    </div>
+                    <div class="background--split-2-darker columns">
+                        <p>$color-split-2-darker</p>
+                    </div>
+                    <div class="background--split-2-dark columns">
+                        <p>$color-split-2-dark</p>
+                    </div>
+                    <div class="background--split-2 columns">
+                        <p>$color-split-2</p>
+                    </div>
+                    <div class="background--split-2-light columns">
+                        <p>$color-split-2-light</p>
+                    </div>
+                    <div class="background--split-2-lighter columns">
+                        <p>$color-split-2-lighter</p>
+                    </div>
+                    <div class="background--split-2-lightest columns">
+                        <p>$color-split-2-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--triad-3-darkest columns">
+                        <p>$color-triad-3-darkest</p>
+                    </div>
+                    <div class="background--triad-3-darker columns">
+                        <p>$color-triad-3-darker</p>
+                    </div>
+                    <div class="background--triad-3-dark columns">
+                        <p>$color-triad-3-dark</p>
+                    </div>
+                    <div class="background--triad-3 columns">
+                        <p>$color-triad-3</p>
+                    </div>
+                    <div class="background--triad-3-light columns">
+                        <p>$color-triad-3-light</p>
+                    </div>
+                    <div class="background--triad-3-lighter columns">
+                        <p>$color-triad-3-lighter</p>
+                    </div>
+                    <div class="background--triad-3-lightest columns">
+                        <p>$color-triad-3-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--tetrad-4-darkest columns">
+                        <p>$color-tetrad-4-darkest</p>
+                    </div>
+                    <div class="background--tetrad-4-darker columns">
+                        <p>$color-tetrad-4-darker</p>
+                    </div>
+                    <div class="background--tetrad-4-dark columns">
+                        <p>$color-tetrad-4-dark</p>
+                    </div>
+                    <div class="background--tetrad-4 columns">
+                        <p>$color-tetrad-4</p>
+                    </div>
+                    <div class="background--tetrad-4-light columns">
+                        <p>$color-tetrad-4-light</p>
+                    </div>
+                    <div class="background--tetrad-4-lighter columns">
+                        <p>$color-tetrad-4-lighter</p>
+                    </div>
+                    <div class="background--tetrad-4-lightest columns">
+                        <p>$color-tetrad-4-lightest</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="background--shade-darkest columns">
+                        <p>$color-shade-darkest</p>
+                    </div>
+                    <div class="background--shade-darker columns">
+                        <p>$color-shade-darker</p>
+                    </div>
+                    <div class="background--shade-dark columns">
+                        <p>$color-shade-dark</p>
+                    </div>
+                    <div class="background--shade columns">
+                        <p>$color-shade</p>
+                    </div>
+                    <div class="background--shade-light columns">
+                        <p>$color-shade-light</p>
+                    </div>
+                    <div class="background--shade-lighter columns">
+                        <p>$color-shade-lighter</p>
+                    </div>
+                    <div class="background--shade-lightest columns">
+                        <p>$color-shade-lightest</p>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+        
+        <div class="n-docs-content" id="getStarted">
+            <div class="row" ng-controller="demoController as demo">
+                <div class="small-12 large-6 columns">
+                    {{demo.testValue | componentFilter}}
+                </div>
+                <div class="small-12 large-6 columns">
+                    <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
+                </div>
             </div>
         </div>
     
@@ -36,23 +283,29 @@
         <!-- build:js component.js -->
         <script src="dist/component.js"></script>
         <!-- endbuild -->
-
+    
+        <!-- build:js(./docs) example.js -->
+        <script src="example.js"></script>
+        <script src="node_modules/granim/dist/granim.js"></script>
+        <!-- endbuild -->
+    
         <script>
-            (function() {
-
-                angular.module('demoApp', ['component']);
-
-                angular
-                    .module('demoApp')
-                    .controller('demoController', function() {
-                        var vm = this;
-                        vm.testValue = 'Greetings from Angular with custom filter!';
-                        vm.controllerMethod = function(message) {
-                            console.log(message);
+            document.addEventListener("DOMContentLoaded", function() {
+                var granimInstance = new Granim({
+                    element: '#heroGradientCanvas',
+                    name: 'granim',
+                    isPausedWhenNotInView: true,
+                    opacity: [1, 1],
+                    states : {
+                        "default-state": {
+                            gradients: [
+                                ['#2199e8', '#6433e8'],
+                                ['#936cfb', '#5abbfc']
+                            ]
                         }
-                    });
-
-            })();
+                    }
+                });
+            });
         </script>
     </body>
 </html>

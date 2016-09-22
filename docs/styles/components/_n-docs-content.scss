@@ -1,0 +1,17 @@
+.n-docs-content {
+	@include flex-grid-row();
+}
+.n-docs-content__primary {
+	@include flex-grid-column($columns: 12, $gutter: 0);
+
+	@include breakpoint(medium) {
+		@include flex-grid-column($columns: 9, $gutter: 0);
+	}
+}
+.n-docs-content__secondary {
+	@include flex-grid-column($columns: 12, $gutter: 0);
+
+	@include breakpoint(medium) {
+		@include flex-grid-column($columns: 3, $gutter: 0);
+	}
+}

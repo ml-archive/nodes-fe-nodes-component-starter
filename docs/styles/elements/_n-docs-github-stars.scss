@@ -1,0 +1,13 @@
+n-docs-github-stars,
+[n-docs-github-stars],
+.n-docs-github-stars {
+	display: flex;
+	align-items: center;
+
+	n-docs-star-icon {
+		display: flex;
+		align-items: center;
+
+		@include size($type: margin, $side: right, $size: $whitespace-small);
+	}
+}

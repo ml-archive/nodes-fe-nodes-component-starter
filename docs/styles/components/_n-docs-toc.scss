@@ -1,0 +1,28 @@
+n-docs-toc,
+[n-docs-toc] {
+	display: block;
+}
+.n-docs-toc {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	border: $table-border;
+	&.ui-scrollpoint {
+		position: fixed;
+		top: $whitespace-larger;
+		width: 220px;
+	}
+}
+.n-docs-toc__item {
+
+}
+.n-docs-toc__link {
+	display: block;
+	@include size($type: padding, $side: vertical, $size: $whitespace-small);
+	@include size($type: padding, $side: horizontal, $size: $whitespace-medium);
+
+	&.active {
+		background: $info-color-light;
+	}
+}

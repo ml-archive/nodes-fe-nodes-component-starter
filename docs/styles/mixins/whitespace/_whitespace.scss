@@ -1,0 +1,31 @@
+@mixin whitespace($whitespace-breakpoints, $type, $side, $force: false) {
+
+	// Use size mixin to generate whitespace
+	@include size(
+			$type: $type,
+			$side: $side,
+			$size: map-get($whitespace-breakpoints, small),
+			$force: $force
+	);
+
+	// Set other configured breakpoints
+	@each $breakpoint, $size in $whitespace-breakpoints {
+
+		// Checks if breakpoint exists
+		@if( map-has-key($breakpoints, #{$breakpoint}) and '#{$breakpoint}' != 'small') {
+
+			// Use foundation breakpoint mixin
+			@include breakpoint($breakpoint) {
+
+				// Use size mixin to generate whitespace
+				@include size(
+						$type: $type,
+						$side: $side,
+						$size: $size,
+						$force: $force
+				);
+			}
+
+		}
+	}
+}

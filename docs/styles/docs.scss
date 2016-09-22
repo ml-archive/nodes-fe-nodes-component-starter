@@ -44,8 +44,21 @@
 @include foundation-float-classes;
 @include foundation-flex-classes;
 
+@import "components/n-docs-styleguide";
+
+@import "elements/n-docs-icons";
+@import "elements/n-docs-github-link";
+@import "elements/n-docs-github-stars";
+@import "elements/n-docs-github-latest-release";
+@import "elements/n-docs-install-guides";
+
 @import "components/n-docs-header";
 @import "components/n-docs-hero";
 @import "components/n-docs-navbar";
+@import "components/n-docs-code-example";
+@import "components/n-docs-callout";
+@import "components/n-docs-table";
+@import "components/n-docs-content";
+@import "components/n-docs-toc";
 
-@import "components/n-docs-styleguide";
+@import "demo/demo";

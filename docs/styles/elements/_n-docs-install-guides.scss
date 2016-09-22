@@ -1,0 +1,10 @@
+.n-docs-angular-install-guide,
+.n-docs-npm-install-guide {
+	@include size($type: margin, $side: bottom, $size: $whitespace-medium);
+	border: $table-border;
+}
+
+.n-docs-npm-install-guide {
+	padding: 0.5em;
+	font-family: $code-font-family;
+}

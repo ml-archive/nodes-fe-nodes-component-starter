@@ -1,22 +1,89 @@
 .n-docs-hero {
+	position: relative;
+	height: 50vh;
+	@include breakpoint(medium) {
+		height: 80vh;
+	}
+	@include breakpoint(large) {
+		height: 100vh;
+	}
+
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-
-	box-shadow: inset 0 0 0 1px red;
+	flex: 1 0 100%;
 }
 
-.n-docs-hero__title {
-	margin: 0;
+.n-docs-hero__content {
+	position: relative;
+}
 
-	color: $white;
+.n-docs-hero__title,
+.n-docs-hero__subtitle {
+
+
+	color: $header-text-color;
+
+	font-weight: 300;
+	text-align: center;
+}
+.n-docs-hero__title {
+	@include size($type: margin, $side: bottom, $size: $whitespace-medium);
+}
+.n-docs-hero__subtitle {
+	font-size: rem-calc(map_deep-get($header-sizes, small, 'h3'));
+	@include breakpoint(medium) {
+		font-size: rem-calc(map_deep-get($header-sizes, medium, 'h3'));
+	}
+}
+.n-docs-hero__github {
+	@include size($type: margin, $side: vertical, $size: $whitespace-medium);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.n-docs-hero .n-docs-github-latest-release {
+	a {
+		color: $header-text-color;
+	}
+}
+.n-docs-hero n-docs-github-latest-release,
+.n-docs-hero n-docs-github-link {
+	display: inline-block;
+	@include size($type: margin, $side: horizontal, $size: $whitespace-small);
 }
 
 .n-docs-hero__scroll-anchor {
+	display: inline-block;
+	width: 200px;
+
+	@include size($type: margin, $side: vertical, $size: $whitespace-large);
+	margin-left: auto;
+	margin-right: auto;
+
+	@include size($type: padding, $side: horizontal, $size: $whitespace-medium);
+	@include size($type: padding, $side: vertical, $size: $whitespace-small);
+
+	font-size: rem-calc(map_deep-get($header-sizes, small, 'h5'));
+	font-weight: 300;
+	text-align: center;
+	color: $header-text-color;
+
+	border: 1px solid $header-text-color;
+	border-radius: $global-radius;
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(map_deep-get($header-sizes, medium, 'h5'));
+	}
 
 }
 
-.n-docs-hero__repository-link {
-
+.n-docs-hero__gradient {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
 }

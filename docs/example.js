@@ -1,6 +1,9 @@
 (function() {
 	
-	angular.module('demoApp', ['component']);
+	angular.module('demoApp', [
+		'nDocs',
+		'component'
+	]);
 	
 	angular
 		.module('demoApp')

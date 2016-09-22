@@ -1,0 +1,55 @@
+n-docs-callout,
+[n-docs-callout] {
+	display: block;
+}
+
+.n-docs-callout {
+	@include size($type: margin, $side: bottom, $size: $whitespace-medium);
+
+	border: 1px solid;
+	overflow: hidden;
+}
+.n-docs-callout__title,
+.n-docs-callout__content {
+	@include size($type: padding, $size: $whitespace-small);
+}
+
+.n-docs-callout__title,
+.n-docs-callout__content p {
+	margin: 0;
+}
+
+.n-docs-callout__title {
+	background-color: $medium-gray;
+}
+
+.n-docs-callout--info {
+	border-color: $info-color;
+	.n-docs-callout__title {
+		background-color: $info-color;
+		color: $white;
+	}
+	.n-docs-callout__content {
+		background-color: $info-color-light;
+	}
+}
+.n-docs-callout--warning {
+	border-color: $warning-color;
+	.n-docs-callout__title {
+		background-color: $warning-color;
+		color: $white;
+	}
+	.n-docs-callout__content {
+		background-color: $warning-color-light;
+	}
+}
+.n-docs-callout--alert {
+	border-color: $alert-color;
+	.n-docs-callout__title {
+		background-color: $alert-color;
+		color: $white;
+	}
+	.n-docs-callout__content {
+		background-color: $alert-color-light;
+	}
+}

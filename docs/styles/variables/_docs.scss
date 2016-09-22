@@ -1,1 +1,73 @@
 $navbar-height: 50px;
+
+$header-text-color: $white;
+
+$global-shadow: 0 2px 2px rgba(0,0,0,0.24),0 0 2px rgba(0,0,0,0.12);
+
+$alert-color: #F44336;
+$alert-color-light: #f4d8d4;
+$warning-color: #FFC107;
+$warning-color-light: #fff0c3;
+$success-color: #8BC34A;
+$success-color-light: #aec3a1;
+$info-color: #2196F3;
+$info-color-light: #dce7f3;
+
+/*
+	White space
+*/
+$whitespace-base: rem-calc(10) !default;
+$whitespace-small: $whitespace-base !default; // 10px
+$whitespace-smaller: $whitespace-base * 1.5 !default; // 15px
+$whitespace-medium: $whitespace-base * 2 !default; // 20px
+$whitespace-mediumer: $whitespace-base * 3 !default; // 30px // :-----)
+$whitespace-large: $whitespace-base * 4 !default; // 40px
+$whitespace-larger: $whitespace-base * 6 !default; // 60px
+$whitespace-xlarge: $whitespace-base * 8 !default; //80px
+$whitespace-xlarger: $whitespace-base * 10 !default // 100px
+$whitespace-xxlarge: $whitespace-base * 16 !default; // 160px
+$whitespace-xxlarger: $whitespace-base * 22 !default; // 220px
+
+$whitespace-sizes: (
+	// Type
+		small: (
+			// Breakpoint
+				'small': $whitespace-small
+		),
+		smaller: (
+			// Breakpoint
+				'small': $whitespace-smaller
+		),
+		medium: (
+			// Breakpoint
+				'small': $whitespace-medium
+		),
+		mediumer: (
+			// Breakpoint
+				'small': $whitespace-mediumer
+		),
+		large: (
+			// Breakpoint
+				'small': $whitespace-large
+		),
+		larger: (
+			// Breakpoint
+				'small': $whitespace-larger
+		),
+		xlarge: (
+			// Breakpoint
+				'small': $whitespace-xlarge
+		),
+		xlarger: (
+			// Breakpoint
+				'small': $whitespace-xlarger
+		),
+		xxlarge: (
+			// Breakpoint
+				'small': $whitespace-xxlarge
+		),
+		xxlarger: (
+			// Breakpoint
+				'small': $whitespace-xxlarger
+		)
+);

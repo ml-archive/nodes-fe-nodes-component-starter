@@ -1,0 +1,13 @@
+n-docs-code-example,
+[n-docs-code-example],
+hljs {
+	display: block;
+}
+
+.n-docs-code-example {
+	@include size($type: margin, $side: bottom, $size: $whitespace-medium);
+	border: $table-border;
+	code {
+		border: 0;
+	}
+}

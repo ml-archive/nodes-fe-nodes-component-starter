@@ -1,21 +1,12 @@
 .n-docs-header {
-	@include flex-grid-row();
-	height: 200px;
+	@include size($type: margin, $side: bottom, $size: $whitespace-large);
 
-	position: relative;
-
-	@include breakpoint(medium) {
-		height: 40vh;
-	}
-	@include breakpoint(large) {
-		height: 80vh;
-	}
-
-	.n-docs-navbar,
-	.n-docs-hero {
-		@include flex-grid-column($columns: 12);
-
-		z-index: 1;
+	.n-docs-icon {
+		width: 32px;
+		height: 32px;
+		path {
+			fill: $header-text-color;
+		}
 	}
 }
 .n-docs-header__canvas {

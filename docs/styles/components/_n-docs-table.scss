@@ -1,0 +1,3 @@
+table.n-docs-table {
+	@include size($type: margin, $side: bottom, $size: $whitespace-medium);
+}

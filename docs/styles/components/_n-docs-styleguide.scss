@@ -128,27 +128,27 @@
 			)
 	);
 
-	@each $color, $color in $colors {
-		.background--#{nth($color, 1)} {
-			background-color: #{nth($color, 2)};
-			&-darkest {
-				background-color: #{nth($color, 3)};
-			}
-			&-darker {
-				background-color: #{nth($color, 4)};
-			}
-			&-dark {
-				background-color: #{nth($color, 5)};
-			}
-			&-light {
-				background-color: #{nth($color, 6)};
-			}
-			&-lighter {
-				background-color: #{nth($color, 7)};
-			}
-			&-lightest {
-				background-color: #{nth($color, 8)};
-			}
-		}
-	}
+	//@each $color, $color in $colors {
+	//	.background--#{nth($color, 1)} {
+	//		background-color: #{nth($color, 2)};
+	//		&-darkest {
+	//			background-color: #{nth($color, 3)};
+	//		}
+	//		&-darker {
+	//			background-color: #{nth($color, 4)};
+	//		}
+	//		&-dark {
+	//			background-color: #{nth($color, 5)};
+	//		}
+	//		&-light {
+	//			background-color: #{nth($color, 6)};
+	//		}
+	//		&-lighter {
+	//			background-color: #{nth($color, 7)};
+	//		}
+	//		&-lightest {
+	//			background-color: #{nth($color, 8)};
+	//		}
+	//	}
+	//}
 }

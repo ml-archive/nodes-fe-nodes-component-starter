@@ -1,24 +1,63 @@
 .n-docs-navbar {
-	position: absolute;
-	top: 0;
-	left: 0;
+	position: fixed;
+
 	width: 100%;
 	height: $navbar-height;
-	transform: translateY(-100%);
 
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 
+	transition: transform 200ms;
+	will-change: transform;
+
 	box-shadow: inset 0 0 0 1px red;
+}
+
+.n-docs-navbar__content {
+	@include flex-grid-row();
+	width: 100%;
+	position: relative;
+
+	.columns {
+		display: flex;
+		align-items: center;
+	}
+}
+
+.n-docs-navbar__title,
+.n-docs-github-link {
+
 }
 
 .n-docs-navbar__title {
 	margin: 0;
 
+	color: $white;
 	font-size: 1rem;
+	line-height: 1;
 }
 
-.n-docs-navbar__repository-link {
-	color: #fff;
+n-docs-github-link {
+	margin-left: auto;
+}
+
+.n-docs-navbar__gradient {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
+
+.n-docs-navbar,
+.n-docs-navbar--top,
+.n-docs-navbar--pinned.n-docs-navbar--top,
+.n-docs-navbar--unpinned {
+	transform: translateY(-100%);
+}
+
+.n-docs-navbar--pinned {
+	transform: translateY(0%);
 }

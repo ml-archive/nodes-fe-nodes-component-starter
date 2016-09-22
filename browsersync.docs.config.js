@@ -1,5 +1,5 @@
 module.exports = {
-	files: ['./docs/**/*.*', './dist/**/*.*'],
+	files: ['./docs/*.*', './dist/**/*.*'],
 	server: {
 		baseDir: './docs',
 		routes: {

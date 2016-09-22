@@ -207,7 +207,7 @@ gulp.task('docs:useref', function() {
 		}))
 		.pipe(gulp.dest('./release'));
 });
-gulp.task('docs:gh-pages', function() {
+gulp.task('docs:gh-pages', ['build', 'docs'], function() {
 	return gulp.src('./release/**/*')
 		.pipe(ghPages());
 });

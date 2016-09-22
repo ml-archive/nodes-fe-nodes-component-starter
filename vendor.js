@@ -31771,7 +31771,15 @@ $provide.value("$locale", {
 'use strict';
 
 function Granim(options) {
-	this.canvas = document.querySelector(options.element);
+	if(options.element instanceof HTMLCanvasElement)
+		this.canvas = options.element
+	else if (typeof options.element === "string")
+		this.canvas = document.querySelector(options.element)
+	else
+		throw new Error('The element you used is neither a String, nor a HTMLCanvasElement');
+	if(!this.canvas){
+		throw new Error('`' + options.element + '` could not be found in the DOM');
+	}
 	this.x1 = 0;
 	this.y1 = 0;
 	this.name = options.name || false;
@@ -32330,3 +32338,1523 @@ module.exports = function() {
 window.Granim = require('./lib/Granim.js');
 
 },{"./lib/Granim.js":1}]},{},[19]);
+
+/*!
+ * headroom.js v0.9.3 - Give your page some headroom. Hide your header until you need it
+ * Copyright (c) 2016 Nick Williams - http://wicky.nillia.ms/headroom.js
+ * License: MIT
+ */
+
+(function(root, factory) {
+  'use strict';
+
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define([], factory);
+  }
+  else if (typeof exports === 'object') {
+    // COMMONJS
+    module.exports = factory();
+  }
+  else {
+    // BROWSER
+    root.Headroom = factory();
+  }
+}(this, function() {
+  'use strict';
+
+  /* exported features */
+  
+  var features = {
+    bind : !!(function(){}.bind),
+    classList : 'classList' in document.documentElement,
+    rAF : !!(window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame)
+  };
+  window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
+  
+  /**
+   * Handles debouncing of events via requestAnimationFrame
+   * @see http://www.html5rocks.com/en/tutorials/speed/animations/
+   * @param {Function} callback The callback to handle whichever event
+   */
+  function Debouncer (callback) {
+    this.callback = callback;
+    this.ticking = false;
+  }
+  Debouncer.prototype = {
+    constructor : Debouncer,
+  
+    /**
+     * dispatches the event to the supplied callback
+     * @private
+     */
+    update : function() {
+      this.callback && this.callback();
+      this.ticking = false;
+    },
+  
+    /**
+     * ensures events don't get stacked
+     * @private
+     */
+    requestTick : function() {
+      if(!this.ticking) {
+        requestAnimationFrame(this.rafCallback || (this.rafCallback = this.update.bind(this)));
+        this.ticking = true;
+      }
+    },
+  
+    /**
+     * Attach this as the event listeners
+     */
+    handleEvent : function() {
+      this.requestTick();
+    }
+  };
+  /**
+   * Check if object is part of the DOM
+   * @constructor
+   * @param {Object} obj element to check
+   */
+  function isDOMElement(obj) {
+    return obj && typeof window !== 'undefined' && (obj === window || obj.nodeType);
+  }
+  
+  /**
+   * Helper function for extending objects
+   */
+  function extend (object /*, objectN ... */) {
+    if(arguments.length <= 0) {
+      throw new Error('Missing arguments in extend function');
+    }
+  
+    var result = object || {},
+        key,
+        i;
+  
+    for (i = 1; i < arguments.length; i++) {
+      var replacement = arguments[i] || {};
+  
+      for (key in replacement) {
+        // Recurse into object except if the object is a DOM element
+        if(typeof result[key] === 'object' && ! isDOMElement(result[key])) {
+          result[key] = extend(result[key], replacement[key]);
+        }
+        else {
+          result[key] = result[key] || replacement[key];
+        }
+      }
+    }
+  
+    return result;
+  }
+  
+  /**
+   * Helper function for normalizing tolerance option to object format
+   */
+  function normalizeTolerance (t) {
+    return t === Object(t) ? t : { down : t, up : t };
+  }
+  
+  /**
+   * UI enhancement for fixed headers.
+   * Hides header when scrolling down
+   * Shows header when scrolling up
+   * @constructor
+   * @param {DOMElement} elem the header element
+   * @param {Object} options options for the widget
+   */
+  function Headroom (elem, options) {
+    options = extend(options, Headroom.options);
+  
+    this.lastKnownScrollY = 0;
+    this.elem             = elem;
+    this.tolerance        = normalizeTolerance(options.tolerance);
+    this.classes          = options.classes;
+    this.offset           = options.offset;
+    this.scroller         = options.scroller;
+    this.initialised      = false;
+    this.onPin            = options.onPin;
+    this.onUnpin          = options.onUnpin;
+    this.onTop            = options.onTop;
+    this.onNotTop         = options.onNotTop;
+    this.onBottom         = options.onBottom;
+    this.onNotBottom      = options.onNotBottom;
+  }
+  Headroom.prototype = {
+    constructor : Headroom,
+  
+    /**
+     * Initialises the widget
+     */
+    init : function() {
+      if(!Headroom.cutsTheMustard) {
+        return;
+      }
+  
+      this.debouncer = new Debouncer(this.update.bind(this));
+      this.elem.classList.add(this.classes.initial);
+  
+      // defer event registration to handle browser 
+      // potentially restoring previous scroll position
+      setTimeout(this.attachEvent.bind(this), 100);
+  
+      return this;
+    },
+  
+    /**
+     * Unattaches events and removes any classes that were added
+     */
+    destroy : function() {
+      var classes = this.classes;
+  
+      this.initialised = false;
+      this.elem.classList.remove(classes.unpinned, classes.pinned, classes.top, classes.notTop, classes.initial);
+      this.scroller.removeEventListener('scroll', this.debouncer, false);
+    },
+  
+    /**
+     * Attaches the scroll event
+     * @private
+     */
+    attachEvent : function() {
+      if(!this.initialised){
+        this.lastKnownScrollY = this.getScrollY();
+        this.initialised = true;
+        this.scroller.addEventListener('scroll', this.debouncer, false);
+  
+        this.debouncer.handleEvent();
+      }
+    },
+    
+    /**
+     * Unpins the header if it's currently pinned
+     */
+    unpin : function() {
+      var classList = this.elem.classList,
+        classes = this.classes;
+      
+      if(classList.contains(classes.pinned) || !classList.contains(classes.unpinned)) {
+        classList.add(classes.unpinned);
+        classList.remove(classes.pinned);
+        this.onUnpin && this.onUnpin.call(this);
+      }
+    },
+  
+    /**
+     * Pins the header if it's currently unpinned
+     */
+    pin : function() {
+      var classList = this.elem.classList,
+        classes = this.classes;
+      
+      if(classList.contains(classes.unpinned)) {
+        classList.remove(classes.unpinned);
+        classList.add(classes.pinned);
+        this.onPin && this.onPin.call(this);
+      }
+    },
+  
+    /**
+     * Handles the top states
+     */
+    top : function() {
+      var classList = this.elem.classList,
+        classes = this.classes;
+      
+      if(!classList.contains(classes.top)) {
+        classList.add(classes.top);
+        classList.remove(classes.notTop);
+        this.onTop && this.onTop.call(this);
+      }
+    },
+  
+    /**
+     * Handles the not top state
+     */
+    notTop : function() {
+      var classList = this.elem.classList,
+        classes = this.classes;
+      
+      if(!classList.contains(classes.notTop)) {
+        classList.add(classes.notTop);
+        classList.remove(classes.top);
+        this.onNotTop && this.onNotTop.call(this);
+      }
+    },
+  
+    bottom : function() {
+      var classList = this.elem.classList,
+        classes = this.classes;
+      
+      if(!classList.contains(classes.bottom)) {
+        classList.add(classes.bottom);
+        classList.remove(classes.notBottom);
+        this.onBottom && this.onBottom.call(this);
+      }
+    },
+  
+    /**
+     * Handles the not top state
+     */
+    notBottom : function() {
+      var classList = this.elem.classList,
+        classes = this.classes;
+      
+      if(!classList.contains(classes.notBottom)) {
+        classList.add(classes.notBottom);
+        classList.remove(classes.bottom);
+        this.onNotBottom && this.onNotBottom.call(this);
+      }
+    },
+  
+    /**
+     * Gets the Y scroll position
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/Window.scrollY
+     * @return {Number} pixels the page has scrolled along the Y-axis
+     */
+    getScrollY : function() {
+      return (this.scroller.pageYOffset !== undefined)
+        ? this.scroller.pageYOffset
+        : (this.scroller.scrollTop !== undefined)
+          ? this.scroller.scrollTop
+          : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    },
+  
+    /**
+     * Gets the height of the viewport
+     * @see http://andylangton.co.uk/blog/development/get-viewport-size-width-and-height-javascript
+     * @return {int} the height of the viewport in pixels
+     */
+    getViewportHeight : function () {
+      return window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
+    },
+  
+    /**
+     * Gets the physical height of the DOM element
+     * @param  {Object}  elm the element to calculate the physical height of which
+     * @return {int}     the physical height of the element in pixels
+     */
+    getElementPhysicalHeight : function (elm) {
+      return Math.max(
+        elm.offsetHeight,
+        elm.clientHeight
+      );
+    },
+  
+    /**
+     * Gets the physical height of the scroller element
+     * @return {int} the physical height of the scroller element in pixels
+     */
+    getScrollerPhysicalHeight : function () {
+      return (this.scroller === window || this.scroller === document.body)
+        ? this.getViewportHeight()
+        : this.getElementPhysicalHeight(this.scroller);
+    },
+  
+    /**
+     * Gets the height of the document
+     * @see http://james.padolsey.com/javascript/get-document-height-cross-browser/
+     * @return {int} the height of the document in pixels
+     */
+    getDocumentHeight : function () {
+      var body = document.body,
+        documentElement = document.documentElement;
+    
+      return Math.max(
+        body.scrollHeight, documentElement.scrollHeight,
+        body.offsetHeight, documentElement.offsetHeight,
+        body.clientHeight, documentElement.clientHeight
+      );
+    },
+  
+    /**
+     * Gets the height of the DOM element
+     * @param  {Object}  elm the element to calculate the height of which
+     * @return {int}     the height of the element in pixels
+     */
+    getElementHeight : function (elm) {
+      return Math.max(
+        elm.scrollHeight,
+        elm.offsetHeight,
+        elm.clientHeight
+      );
+    },
+  
+    /**
+     * Gets the height of the scroller element
+     * @return {int} the height of the scroller element in pixels
+     */
+    getScrollerHeight : function () {
+      return (this.scroller === window || this.scroller === document.body)
+        ? this.getDocumentHeight()
+        : this.getElementHeight(this.scroller);
+    },
+  
+    /**
+     * determines if the scroll position is outside of document boundaries
+     * @param  {int}  currentScrollY the current y scroll position
+     * @return {bool} true if out of bounds, false otherwise
+     */
+    isOutOfBounds : function (currentScrollY) {
+      var pastTop  = currentScrollY < 0,
+        pastBottom = currentScrollY + this.getScrollerPhysicalHeight() > this.getScrollerHeight();
+      
+      return pastTop || pastBottom;
+    },
+  
+    /**
+     * determines if the tolerance has been exceeded
+     * @param  {int} currentScrollY the current scroll y position
+     * @return {bool} true if tolerance exceeded, false otherwise
+     */
+    toleranceExceeded : function (currentScrollY, direction) {
+      return Math.abs(currentScrollY-this.lastKnownScrollY) >= this.tolerance[direction];
+    },
+  
+    /**
+     * determine if it is appropriate to unpin
+     * @param  {int} currentScrollY the current y scroll position
+     * @param  {bool} toleranceExceeded has the tolerance been exceeded?
+     * @return {bool} true if should unpin, false otherwise
+     */
+    shouldUnpin : function (currentScrollY, toleranceExceeded) {
+      var scrollingDown = currentScrollY > this.lastKnownScrollY,
+        pastOffset = currentScrollY >= this.offset;
+  
+      return scrollingDown && pastOffset && toleranceExceeded;
+    },
+  
+    /**
+     * determine if it is appropriate to pin
+     * @param  {int} currentScrollY the current y scroll position
+     * @param  {bool} toleranceExceeded has the tolerance been exceeded?
+     * @return {bool} true if should pin, false otherwise
+     */
+    shouldPin : function (currentScrollY, toleranceExceeded) {
+      var scrollingUp  = currentScrollY < this.lastKnownScrollY,
+        pastOffset = currentScrollY <= this.offset;
+  
+      return (scrollingUp && toleranceExceeded) || pastOffset;
+    },
+  
+    /**
+     * Handles updating the state of the widget
+     */
+    update : function() {
+      var currentScrollY  = this.getScrollY(),
+        scrollDirection = currentScrollY > this.lastKnownScrollY ? 'down' : 'up',
+        toleranceExceeded = this.toleranceExceeded(currentScrollY, scrollDirection);
+  
+      if(this.isOutOfBounds(currentScrollY)) { // Ignore bouncy scrolling in OSX
+        return;
+      }
+  
+      if (currentScrollY <= this.offset ) {
+        this.top();
+      } else {
+        this.notTop();
+      }
+  
+      if(currentScrollY + this.getViewportHeight() >= this.getScrollerHeight()) {
+        this.bottom();
+      }
+      else {
+        this.notBottom();
+      }
+  
+      if(this.shouldUnpin(currentScrollY, toleranceExceeded)) {
+        this.unpin();
+      }
+      else if(this.shouldPin(currentScrollY, toleranceExceeded)) {
+        this.pin();
+      }
+  
+      this.lastKnownScrollY = currentScrollY;
+    }
+  };
+  /**
+   * Default options
+   * @type {Object}
+   */
+  Headroom.options = {
+    tolerance : {
+      up : 0,
+      down : 0
+    },
+    offset : 0,
+    scroller: window,
+    classes : {
+      pinned : 'headroom--pinned',
+      unpinned : 'headroom--unpinned',
+      top : 'headroom--top',
+      notTop : 'headroom--not-top',
+      bottom : 'headroom--bottom',
+      notBottom : 'headroom--not-bottom',
+      initial : 'headroom'
+    }
+  };
+  Headroom.cutsTheMustard = typeof features !== 'undefined' && features.rAF && features.bind && features.classList;
+
+  return Headroom;
+}));
+/*!
+ * headroom.js v0.9.3 - Give your page some headroom. Hide your header until you need it
+ * Copyright (c) 2016 Nick Williams - http://wicky.nillia.ms/headroom.js
+ * License: MIT
+ */
+
+(function (angular, Headroom) {
+
+  if(!angular) {
+    return;
+  }
+  
+  function headroom(HeadroomService) {
+    return {
+      scope: {
+        tolerance: '=',
+        offset: '=',
+        classes: '=',
+        scroller: '@'
+      },
+      link: function ($scope, $element) {
+        var options = {};
+        var opts = HeadroomService.options;
+        for (var prop in opts) {
+          options[prop] = $scope[prop] || opts[prop];
+        }
+        if ($scope.scroller) {
+          options.scroller = document.querySelector($scope.scroller);
+        }
+        var headroom = new HeadroomService($element[0], options).init();
+        $scope.$on('$destroy', function(){
+          headroom.destroy();
+        });
+      }
+    };
+  }
+  
+  headroom.$inject = ['HeadroomService'];
+
+  function HeadroomService() {
+    return Headroom;
+  }
+
+  angular
+    .module('headroom', [])
+    .directive('headroom', headroom)
+    .factory('HeadroomService', HeadroomService);
+  
+})(window.angular, window.Headroom);
+!function(e){"use strict";function t(){"complete"===document.readyState?n():e.addEventListener("DOMContentLoaded",n)}function n(){try{var e=document.querySelectorAll("code.hljs");for(var t in e)e.hasOwnProperty(t)&&r(e[t])}catch(n){console.error("LineNumbers error: ",n)}}function r(e){if("object"==typeof e){var t=e.parentNode,n=o(t.textContent);if(n>1){for(var r="",c=0;n>c;c++)r+=c+1+"\n";var l=document.createElement("code");l.className="hljs hljs-line-numbers",l.style["float"]="left",l.textContent=r,t.insertBefore(l,e)}}}function o(e){if(0===e.length)return 0;var t=/\r\n|\r|\n/g,n=e.match(t);return n=n?n.length:0,e[e.length-1].match(t)||(n+=1),n}"undefined"==typeof e.hljs?console.error("highlight.js not detected!"):(e.hljs.initLineNumbersOnLoad=t,e.hljs.lineNumbersBlock=r)}(window);
+/*! angular-highlightjs
+version: 0.6.2
+build date: 2016-08-19
+author: Chih-Hsuan Fan
+https://github.com/pc035860/angular-highlightjs.git */
+
+(function (root, factory) {
+  if (typeof exports === "object" || (typeof module === "object" && module.exports)) {
+    module.exports = factory(require("angular"), require("highlight.js"));
+  } else if (typeof define === "function" && define.amd) {
+    define(["angular", "hljs"], factory);
+  } else {
+    root.returnExports = factory(root.angular, root.hljs);
+  }
+}(this, function (angular, hljs) {
+
+/*global angular, hljs*/
+
+/**
+ * returns a function to transform attrs to supported ones
+ *
+ * escape:
+ *   hljs-escape or escape
+ * no-escape:
+ *   hljs-no-escape or no-escape
+ * onhighlight:
+ *   hljs-onhighlight or onhighlight
+ */
+function attrGetter(attrs) {
+  return function (name) {
+    switch (name) {
+      case 'escape':
+        return angular.isDefined(attrs.hljsEscape) ?
+          attrs.hljsEscape :
+          attrs.escape;
+
+      case 'no-escape':
+        return angular.isDefined(attrs.hljsNoEscape) ?
+          attrs.hljsNoEscape :
+          attrs.noEscape;
+
+      case 'onhighlight':
+        return angular.isDefined(attrs.hljsOnhighlight) ?
+          attrs.hljsOnhighlight :
+          attrs.onhighlight;
+    }
+  };
+}
+
+function shouldHighlightStatics(attrs) {
+  var should = true;
+  angular.forEach([
+    'source', 'include'
+  ], function (name) {
+    if (attrs[name]) {
+      should = false;
+    }
+  });
+  return should;
+}
+
+var ngModule = angular.module('hljs', []);
+
+/**
+ * hljsService service
+ */
+ngModule.provider('hljsService', function () {
+  var _hljsOptions = {};
+
+  return {
+    setOptions: function (options) {
+      angular.extend(_hljsOptions, options);
+    },
+    getOptions: function () {
+      return angular.copy(_hljsOptions);
+    },
+    $get: function () {
+      (hljs.configure || angular.noop)(_hljsOptions);
+      return hljs;
+    }
+  };
+});
+
+/**
+ * hljsCache service
+ */
+ngModule.factory('hljsCache', ["$cacheFactory", function ($cacheFactory) {
+  return $cacheFactory('hljsCache');
+}]);
+
+/**
+ * HljsCtrl controller
+ */
+ngModule.controller('HljsCtrl',
+["hljsCache", "hljsService", "$interpolate", "$window", function HljsCtrl (hljsCache, hljsService, $interpolate, $window) {
+  var ctrl = this;
+
+  var _elm = null,
+      _lang = null,
+      _code = null,
+      _interpolateScope = false,
+      _stopInterpolateWatch = null,
+      _hlCb = null;
+
+  var RE_INTERPOLATION_STR = escapeRe($interpolate.startSymbol()) +
+    '((.|\\s)+?)' + escapeRe($interpolate.endSymbol());
+
+  var INTERPOLATION_SYMBOL = '∫';
+
+  ctrl.init = function (codeElm) {
+    _elm = codeElm;
+  };
+
+  ctrl.setInterpolateScope = function (scope) {
+    _interpolateScope = scope;
+
+    if (_code) {
+      ctrl.highlight(_code);
+    }
+  };
+
+  ctrl.setLanguage = function (lang) {
+    _lang = lang;
+
+    if (_code) {
+      ctrl.highlight(_code);
+    }
+  };
+
+  ctrl.highlightCallback = function (cb) {
+    _hlCb = cb;
+  };
+
+  ctrl._highlight = function (code) {
+    if (!_elm) {
+      return;
+    }
+
+    var res, cacheKey, interpolateData;
+
+    _code = code;  // preserve raw code
+
+    if (_interpolateScope) {
+      interpolateData = extractInterpolations(code);
+      code = interpolateData.code;
+    }
+
+    if (_lang) {
+      // cache key: language, scope, code
+      cacheKey = ctrl._cacheKey(_lang, !!_interpolateScope, code);
+      res = hljsCache.get(cacheKey);
+
+      if (!res) {
+        res = hljsService.highlight(_lang, hljsService.fixMarkup(code), true);
+        hljsCache.put(cacheKey, res);
+      }
+    }
+    else {
+      // cache key: scope, code
+      cacheKey = ctrl._cacheKey(!!_interpolateScope, code);
+      res = hljsCache.get(cacheKey);
+
+      if (!res) {
+        res = hljsService.highlightAuto(hljsService.fixMarkup(code));
+        hljsCache.put(cacheKey, res);
+      }
+    }
+
+    code = res.value;
+
+    if (_interpolateScope) {
+      (_stopInterpolateWatch||angular.noop)();
+
+      if (interpolateData) {
+        code = recoverInterpolations(code, interpolateData.tokens);
+      }
+
+      var interpolateFn = $interpolate(code);
+      _stopInterpolateWatch = _interpolateScope.$watch(interpolateFn, function (newVal, oldVal) {
+        if (newVal !== oldVal) {
+          _elm.html(newVal);
+        }
+      });
+      _interpolateScope.$apply();
+      _elm.html(interpolateFn(_interpolateScope));
+    }
+    else {
+      _elm.html(code);
+    }
+
+    // language as class on the <code> tag
+    _elm.addClass(res.language);
+
+    if (_hlCb !== null && angular.isFunction(_hlCb)) {
+      _hlCb();
+    }
+  };
+  ctrl.highlight = debounce(ctrl._highlight, 17);
+
+  ctrl.clear = function () {
+    if (!_elm) {
+      return;
+    }
+    _code = null;
+    _elm.text('');
+  };
+
+  ctrl.release = function () {
+    _elm = null;
+    _interpolateScope = null;
+    (_stopInterpolateWatch||angular.noop)();
+    _stopInterpolateWatch = null;
+  };
+
+  ctrl._cacheKey = function () {
+    var args = Array.prototype.slice.call(arguments),
+        glue = "!angular-highlightjs!";
+    return args.join(glue);
+  };
+
+
+  // http://davidwalsh.name/function-debounce
+  function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
+      var callNow = immediate && !timeout;
+      $window.clearTimeout(timeout);
+      timeout = $window.setTimeout(later, wait);
+      if (callNow) {
+        func.apply(context, args);
+      }
+    };
+  }
+
+  // Ref: http://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
+  function escapeRe(text, asString) {
+    var replacement = asString ? "\\\\$&" : "\\$&";
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, replacement);
+  }
+
+  function extractInterpolations(code) {
+    var interpolateTokens = [],
+        re = new RegExp(RE_INTERPOLATION_STR, 'g'),
+        newCode = '',
+        lastIndex = 0,
+        arr;
+
+    while ((arr = re.exec(code)) !== null) {
+      newCode += code.substring(lastIndex, arr.index) + INTERPOLATION_SYMBOL;
+      lastIndex = arr.index + arr[0].length;
+      interpolateTokens.push(arr[0]);
+    }
+
+    newCode += code.substr(lastIndex);
+
+    return {
+      code: newCode,
+      tokens: interpolateTokens
+    };
+  }
+
+  function recoverInterpolations(code, tokens) {
+    var re = new RegExp(INTERPOLATION_SYMBOL, 'g'),
+        newCode = '',
+        lastIndex = 0,
+        arr;
+
+    while ((arr = re.exec(code)) !== null) {
+      newCode += code.substring(lastIndex, arr.index ) + tokens.shift();
+      lastIndex = arr.index + arr[0].length;
+    }
+
+    newCode += code.substr(lastIndex);
+
+    return newCode;
+  }
+}]);
+
+
+var hljsDir, interpolateDirFactory, languageDirFactory, sourceDirFactory, includeDirFactory;
+
+/**
+ * hljs directive
+ */
+hljsDir = /*@ngInject*/ ["$parse", function ($parse) {
+  return {
+    restrict: 'EA',
+    controller: 'HljsCtrl',
+    compile: function(tElm, tAttrs, transclude) {
+      // get static code
+      // strip the starting "new line" character
+      var staticHTML = tElm[0].innerHTML.replace(/^(\r\n|\r|\n)/m, ''),
+          staticText = tElm[0].textContent.replace(/^(\r\n|\r|\n)/m, '');
+
+      // put template
+      tElm.html('<pre><code class="hljs"></code></pre>');
+
+      return function postLink(scope, iElm, iAttrs, ctrl) {
+        var escapeCheck;
+
+        var attrs = attrGetter(iAttrs);
+
+        if (angular.isDefined(attrs('escape'))) {
+          escapeCheck = $parse(attrs('escape'));
+        } else if (angular.isDefined(attrs('no-escape'))) {
+          escapeCheck = $parse('false');
+        }
+
+        ctrl.init(iElm.find('code'));
+
+        if (attrs('onhighlight')) {
+          ctrl.highlightCallback(function () {
+            scope.$eval(attrs('onhighlight'));
+          });
+        }
+
+        if ((staticHTML || staticText) && shouldHighlightStatics(iAttrs)) {
+
+          var code;
+
+          // Auto-escape check
+          // default to "true"
+          if (escapeCheck && !escapeCheck(scope)) {
+            code = staticText;
+          }
+          else {
+            code = staticHTML;
+          }
+
+          ctrl.highlight(code);
+        }
+
+        scope.$on('$destroy', function () {
+          ctrl.release();
+        });
+      };
+    }
+  };
+}];
+
+/**
+ * language directive
+ */
+languageDirFactory = function (dirName) {
+  return /*@ngInject*/ function () {
+    return {
+      require: '?hljs',
+      restrict: 'A',
+      link: function (scope, iElm, iAttrs, ctrl) {
+        if (!ctrl) {
+          return;
+        }      
+        iAttrs.$observe(dirName, function (lang) {
+          if (angular.isDefined(lang)) {
+            ctrl.setLanguage(lang);
+          }
+        });
+      }
+    };
+  };
+};
+
+/**
+ * interpolate directive
+ */
+interpolateDirFactory = function (dirName) {
+  /*@ngInject*/
+  return function () {
+    return {
+      require: '?hljs',
+      restrict: 'A',
+      link: function (scope, iElm, iAttrs, ctrl) {
+        if (!ctrl) {
+          return;
+        }
+        scope.$watch(iAttrs[dirName], function (newVal, oldVal) {
+          if (newVal || newVal !== oldVal) {
+            ctrl.setInterpolateScope(newVal ? scope : null);
+          }
+        });
+      }
+    };
+  };
+};
+
+/**
+ * source directive
+ */
+sourceDirFactory = function (dirName) {
+  return /*@ngInject*/ function () {
+    return {
+      require: '?hljs',
+      restrict: 'A',
+      link: function(scope, iElm, iAttrs, ctrl) {
+        if (!ctrl) {
+          return;
+        }
+
+        scope.$watch(iAttrs[dirName], function (newCode, oldCode) {
+          if (newCode) {
+            ctrl.highlight(newCode);
+          }
+          else {
+            ctrl.clear();
+          }
+        });
+      }
+    };
+  };
+};
+
+/**
+ * include directive
+ */
+includeDirFactory = function (dirName) {
+  return /*@ngInject*/ ["$http", "$templateCache", "$q", function ($http, $templateCache, $q) {
+    return {
+      require: '?hljs',
+      restrict: 'A',
+      compile: function(tElm, tAttrs, transclude) {
+        var srcExpr = tAttrs[dirName];
+
+        return function postLink(scope, iElm, iAttrs, ctrl) {
+          var changeCounter = 0;
+
+          if (!ctrl) {
+            return;
+          }
+
+          scope.$watch(srcExpr, function (src) {
+            var thisChangeId = ++changeCounter;
+
+            if (src && angular.isString(src)) {
+              var templateCachePromise, dfd;
+
+              templateCachePromise = $templateCache.get(src);
+              if (!templateCachePromise) {
+                dfd = $q.defer();
+                $http.get(src, {
+                  cache: $templateCache,
+                  transformResponse: function(data, headersGetter) {
+                    // Return the raw string, so $http doesn't parse it
+                    // if it's json.
+                    return data;
+                  }
+                }).success(function (code) {
+                  if (thisChangeId !== changeCounter) {
+                    return;
+                  }
+                  dfd.resolve(code);
+                }).error(function() {
+                  if (thisChangeId === changeCounter) {
+                    ctrl.clear();
+                  }
+                  dfd.resolve();
+                });
+                templateCachePromise = dfd.promise;
+              }
+
+              $q.when(templateCachePromise)
+              .then(function (code) {
+                if (!code) {
+                  return;
+                }
+
+                // $templateCache from $http
+                if (angular.isArray(code)) {
+                  // 1.1.5
+                  code = code[1];
+                }
+                else if (angular.isObject(code)) {
+                  // 1.0.7
+                  code = code.data;
+                }
+
+                code = code.replace(/^(\r\n|\r|\n)/m, '');
+                ctrl.highlight(code);
+              });
+            }
+            else {
+              ctrl.clear();
+            }
+          });
+        };
+      }
+    };
+  }];
+};
+
+/**
+ * Add directives
+ */
+(function (module) {
+  module.directive('hljs', hljsDir);
+
+  angular.forEach(['interpolate', 'hljsInterpolate', 'compile', 'hljsCompile'], function (name) {
+    module.directive(name, interpolateDirFactory(name));
+  });
+
+  angular.forEach(['language', 'hljsLanguage'], function (name) {
+    module.directive(name, languageDirFactory(name));
+  });
+
+  angular.forEach(['source', 'hljsSource'], function (name) {
+    module.directive(name, sourceDirFactory(name));
+  });
+
+  angular.forEach(['include', 'hljsInclude'], function (name) {
+    module.directive(name, includeDirFactory(name));
+  });
+})(ngModule);
+
+  return "hljs";
+}));
+/*!
+ * angular-ui-scrollpoint
+ * https://github.com/angular-ui/ui-scrollpoint
+ * Version: 2.1.1 - 2016-02-22T01:37:49.997Z
+ * License: MIT
+ */
+
+
+(function () { 
+'use strict';
+/**
+ * Adds a 'ui-scrollpoint' class to the element when the page scrolls past it's position.
+ * @param [offset] {int} optional Y-offset to override the detected offset.
+ *   Takes 300 (absolute) or -300 or +300 (relative to detected)
+ */
+angular.module('ui.scrollpoint', []).directive('uiScrollpoint', ['$window', '$timeout', function ($window, $timeout) {
+
+        function getWindowScrollTop() {
+            if (angular.isDefined($window.pageYOffset)) {
+                return $window.pageYOffset;
+            } else {
+                var iebody = (document.compatMode && document.compatMode !== 'BackCompat') ? document.documentElement : document.body;
+                return iebody.scrollTop;
+            }
+        }
+        function getWindowScrollHeight() {
+            return ($window.document.body.scrollHeight - $window.innerHeight);
+        }
+        function getWindowHeight(contentHeight) {
+            return (contentHeight ? $window.document.body.clientHeight : $window.innerHeight);
+        }
+        return {
+            require: ['uiScrollpoint', '^?uiScrollpointTarget'],
+            controller: function(){
+                var self = this;
+                this.$element = undefined;
+                this.$target = undefined;
+                this.hasTarget = false;
+
+                this.hit = undefined;
+                this.edges = { top: { top: true }}; // ui-scrollpoint on top edge of element with top edge of target
+                this.hitEdge = undefined;
+
+                this.default_edge = {
+                    absolute: false,
+                    percent: false,
+                    shift: 0
+                };
+                this.posCache = {};
+
+                this.ready = false;
+                this.enabled = true;
+                
+                this.scrollpointClass = 'ui-scrollpoint';
+                this.actions = undefined;
+
+                function parseScrollpoint(scrollpoint){
+                    var def = { shift: 0, absolute: false, percent: false };
+                    if(scrollpoint && angular.isString(scrollpoint)) {
+                        def.percent = (scrollpoint.charAt(scrollpoint.length-1) == '%');
+                        if(def.percent) {
+                            scrollpoint = scrollpoint.substr(0, scrollpoint.length-1);
+                        }
+                        if(scrollpoint.charAt(0) === '-') {
+                            def.absolute = def.percent;
+                            def.shift = -parseFloat(scrollpoint.substr(1));
+                        }
+                        else if(scrollpoint.charAt(0) === '+') {
+                            def.absolute = def.percent;
+                            def.shift = parseFloat(scrollpoint.substr(1));
+                        }
+                        else {
+                            var parsed = parseFloat(scrollpoint);
+                            if (!isNaN(parsed) && isFinite(parsed)) {
+                                def.absolute = true;
+                                def.shift = parsed;
+                            }
+                        }
+                    }
+                    else if(angular.isNumber(scrollpoint)){
+                        return parseScrollpoint(scrollpoint.toString());
+                    }
+                    return def;
+                }
+
+                this.addEdge = function(view_edge, element_edge){
+                    if(angular.isString(view_edge)){
+                        if(angular.isUndefined(element_edge)){
+                            element_edge = true;
+                        }
+                        if(view_edge == 'view'){
+                            // view is a shorthand for matching top of element with bottom of view, and vice versa
+                            this.addEdge('top', 'bottom');
+                            this.addEdge('bottom', 'top');
+                        }
+                        else{
+                            var edge, parsedEdge;
+                            if(angular.isObject(element_edge)){
+                                // the view_edge interacts with more than one element_edge
+                                for(edge in element_edge){
+                                    // parse each element_edge definition (allows each element_edge to have its own scrollpoint with view_edge)
+                                    if(element_edge[edge] === true){
+                                        element_edge[edge] = true; // use the ui-scrollpoint default
+                                    }
+                                    else{
+                                        element_edge[edge] = parseScrollpoint(element_edge[edge]);
+                                    }
+                                }
+                            }
+                            else if(element_edge == 'top' || element_edge == 'bottom'){
+                                // simple top or bottom of element with 0 shift
+                                edge = element_edge;
+                                parsedEdge = parseScrollpoint();
+                                element_edge = {};
+                                element_edge[edge] = parsedEdge;
+                            }
+                            else if(element_edge === true){
+                                element_edge = {};
+                                element_edge[view_edge] = true; // use the ui-scrollpoint default
+                            }
+                            else{
+                                // element_edge matches view_edge (ie. top of element interacts with top of view)
+                                parsedEdge = parseScrollpoint(element_edge);
+                                element_edge = {};
+                                element_edge[view_edge] = parsedEdge;
+                            }
+                            // element_edge has been parsed
+                            this.edges[view_edge] = element_edge;
+                        }
+                    }
+                };
+
+                this.addAction = function(action){
+                    if(action && angular.isFunction(action)){
+                        if(angular.isUndefined(this.actions)){
+                            this.actions = [action];
+                        }
+                        else if(this.actions.indexOf(action) == -1){
+                            this.actions.push(action);
+                        }
+                    }
+                };
+
+                this.setScrollpoint = function(scrollpoint){
+                    this.default_edge = parseScrollpoint(scrollpoint);
+                };
+
+                this.setClass = function(_class){
+                    if(!_class){
+                        _class = 'ui-scrollpoint';
+                    }
+                    this.scrollpointClass = _class;
+                };
+
+                this.setEdges = function(edges){
+                    // normalize uiScrollpointEdge into edges structure
+                    //  edges = { ['screen_edge'] : ['element_edge' | true] }
+                    if(angular.isString(edges)){
+                        this.edges = {};
+                        this.addEdge(edges);
+                    }
+                    else if(angular.isArray(edges)){
+                        this.edges = {};
+                        for(var i=0; i < edges.length; i++){
+                            this.addEdge(edges[i]);
+                        }
+                    }
+                    else if(angular.isObject(edges)){
+                        this.edges = {};
+                        for(var edge in edges){
+                            this.addEdge(edge, edges[edge]);
+                        }
+                    }
+                    else{
+                        // default
+                        this.edges = {};
+                        this.addEdge('top');
+                    }
+                };
+
+                this.setElement = function(element){
+                    this.$element = element;
+                };
+
+                this.setTarget = function(target){
+                    if(target){
+                        this.$target = target;
+                        this.hasTarget = true;
+                    }
+                    else{
+                        this.$target = angular.element($window);
+                        this.hasTarget = false;
+                    }
+                };
+
+                this.getEdge = function(scroll_edge, element_edge){
+                    if(scroll_edge && element_edge){
+                        if(this.edges[scroll_edge] && this.edges[scroll_edge][element_edge] && this.edges[scroll_edge][element_edge] !== true){
+                            return this.edges[scroll_edge][element_edge];
+                        }
+                    }
+                    else if(scroll_edge && !element_edge){
+                        if(this.edges[scroll_edge]){
+                            return this.edges[scroll_edge];
+                        }
+                        return;
+                    }
+                    return this.default_edge;
+                };
+
+                this.checkOffset = function(scroll_edge, elem_edge, edge){
+                    var offset;
+                    if(!edge){
+                        edge = this.default_edge;
+                    }
+
+                    var scroll_bottom = (scroll_edge == 'bottom');
+                    var elem_top = (elem_edge == 'top');
+                    var elem_bottom = (elem_edge == 'bottom');
+
+                    var scrollOffset = this.getScrollOffset();
+                    if(scroll_bottom){
+                        scrollOffset += this.getTargetHeight();
+                    }
+
+                    var checkOffset;
+                    if(edge.absolute){
+                        if(edge.percent){
+                            checkOffset = edge.shift / 100.0 * this.getTargetScrollHeight();
+                        }
+                        else{
+                            checkOffset = edge.shift;
+                        }
+                        if(scroll_bottom){
+                            checkOffset = this.getTargetContentHeight() - checkOffset;
+                            if(this.hasTarget){
+                                checkOffset += this.getTargetHeight();
+                            }
+                        }
+                    }
+                    else{
+                        if(elem_top){
+                            checkOffset = this.getElementTop();
+                        }
+                        else if(elem_bottom){
+                            checkOffset = this.getElementBottom();
+                        }
+                        checkOffset += edge.shift;
+                    }
+
+                    offset = (scrollOffset - checkOffset);
+                    if(scroll_bottom){
+                        offset *= -1.0;
+                    }
+                    return offset;
+                };
+
+                this.scrollEdgeHit = function(){
+                    var offset, edgeHit, absEdges, absEdgeHits;
+                    var edge, scroll_edge, element_edge;
+                    absEdges = 0;
+                    absEdgeHits = {};
+                    for(scroll_edge in this.edges){
+                        for(element_edge in this.edges[scroll_edge]){
+                            edge = this.getEdge(scroll_edge, element_edge);
+                            var edge_offset = this.checkOffset(scroll_edge, element_edge, edge);
+
+                            if(edge.absolute){
+                                if(angular.isUndefined(absEdgeHits)){
+                                    absEdgeHits = {};
+                                }
+                                if(angular.isUndefined(absEdgeHits[scroll_edge])){
+                                    absEdgeHits[scroll_edge] = {};
+                                }
+                                absEdgeHits[scroll_edge][element_edge] = edge_offset;
+                                absEdges++;
+                            }
+                            else if(angular.isUndefined(offset) || edge_offset > offset){
+                                offset = edge_offset;
+                                edgeHit = {scroll: scroll_edge, element: element_edge};
+                            }
+                        }
+                    }
+                    // special handling for absolute edges when no relative edges hit
+                    if(absEdges && !edgeHit){
+                        // in case there is more than one absolute edge, they all should pass to count a hit (allows for creating ranges where the scrollpoint is active)
+                        var allPass = true;
+                        offset = undefined;
+                        for(scroll_edge in absEdgeHits){
+                            for(element_edge in absEdgeHits[scroll_edge]){
+                                if(absEdges > 1 && absEdgeHits[scroll_edge][element_edge] < 0){
+                                    allPass = false;
+                                }
+                                else if(angular.isUndefined(offset) || absEdgeHits[scroll_edge][element_edge] > offset){
+                                    offset = absEdgeHits[scroll_edge][element_edge];
+                                    edgeHit = {scroll: scroll_edge, element: element_edge};
+                                }
+                            }
+                        }
+                        if(!allPass){
+                            edgeHit = undefined;
+                            offset = undefined;
+                        }
+                    }
+                    this.hitEdge = ((offset >= 0) ? edgeHit : undefined);
+                    return offset;
+                };
+
+                this.getScrollOffset = function(){
+                    return this.hasTarget ? this.$target[0].scrollTop : getWindowScrollTop();
+                };
+                this.getTargetHeight = function(){
+                    return this.hasTarget ? this.$target[0].offsetHeight : getWindowHeight();
+                };
+                this.getTargetContentHeight = function(){
+                    return ( this.hasTarget ? (this.$target[0].scrollHeight - this.$target[0].clientHeight) : getWindowHeight(true) );
+                };
+                this.getTargetScrollHeight = function(){
+                    return ( this.hasTarget ? (this.$target[0].scrollHeight - this.$target[0].clientHeight) : getWindowScrollHeight() );
+                };
+
+                this.getElementTop = function(current){
+                    if(!current && angular.isDefined(this.posCache.top)){
+                        return this.posCache.top;
+                    }
+                    var bounds = this.$element[0].getBoundingClientRect();
+                    var top = bounds.top + this.getScrollOffset();
+
+                    if(this.hasTarget){
+                        var targetBounds = this.$target[0].getBoundingClientRect();
+                        top -= targetBounds.top;
+                    }
+
+                    return top;
+                };
+                this.getElementBottom = function(current){
+                    return this.getElementTop(current) + this.$element[0].offsetHeight;
+                };
+
+                this.cachePosition = function(){
+                    this.posCache.top = this.getElementTop(true);
+                };
+
+                this.onScroll = function() {
+                    if(!self.ready || !self.enabled){ return; }
+
+                    var edgeHit = self.scrollEdgeHit();
+                    
+                    // edgeHit >= 0 - scrollpoint is scrolled out of active view
+                    // edgeHit < 0 - scrollpoint is in active view
+
+                    // hit is toggled at the moment the scrollpoint is crossed
+
+                    var fireActions = false;
+
+                    if(edgeHit >= 0){
+                        // SCROLLPOINT is OUT by edgeHit pixels
+                        if(!self.hit){
+                            // add the scrollpoint class
+                            if(!self.$element.hasClass(self.scrollpointClass)){
+                                self.$element.addClass(self.scrollpointClass);
+                            }
+                            fireActions = true;
+                            self.hit = true;
+                        }
+                    }
+                    else{
+                        // SCROLLPOINT is IN by edgeHit pixels
+                        if(self.hit || angular.isUndefined(self.hit)){
+                            // remove the scrollpoint class
+                            if(self.$element.hasClass(self.scrollpointClass)){
+                                self.$element.removeClass(self.scrollpointClass);
+                            }
+                            fireActions = true;
+                            self.hit = false;
+                        }
+                        self.cachePosition();
+                    }
+
+                    if(fireActions){
+                        // fire the actions
+                        if(self.actions){
+                            for(var i=0; i < self.actions.length; i++){
+                                self.actions[i](edgeHit, self.$element, (self.hitEdge ? self.hitEdge.scroll : undefined), (self.hitEdge ? self.hitEdge.element : undefined));
+                            }
+                        }
+                    }
+                };
+
+                this.reset = function(){
+                    $timeout(function(){
+                        self.$element.removeClass(self.scrollpointClass);
+                        self.hit = undefined;
+                        self.hitEdge = undefined;
+                        self.cachePosition();
+                        self.onScroll();
+                    });
+                };
+            },
+            link: function (scope, elm, attrs, Ctrl) {
+                var uiScrollpoint = Ctrl[0];
+                var uiScrollpointTarget = Ctrl[1];
+                var absoluteParent = false;
+
+                uiScrollpoint.setElement(elm);
+                uiScrollpoint.setTarget( uiScrollpointTarget ? uiScrollpointTarget.$element : null);
+
+                // base ui-scrollpoint (leave blank or set to: absolute, +, -, or %)
+                attrs.$observe('uiScrollpoint', function(scrollpoint){
+                    uiScrollpoint.setScrollpoint(scrollpoint);
+                    uiScrollpoint.reset();
+                });
+
+                // ui-scrollpoint-enabled allows disabling the scrollpoint
+                attrs.$observe('uiScrollpointEnabled', function(scrollpointEnabled){
+                    scrollpointEnabled = scope.$eval(scrollpointEnabled);
+                    if(scrollpointEnabled != uiScrollpoint.enabled){
+                        uiScrollpoint.reset();
+                    }
+                    uiScrollpoint.enabled = scrollpointEnabled;
+                });
+
+                // ui-scrollpoint-absolute bypasses ui-scrollpoint-target
+                attrs.$observe('uiScrollpointAbsolute', function(scrollpointAbsolute){
+                    scrollpointAbsolute = scope.$eval(scrollpointAbsolute);
+                    if(scrollpointAbsolute != absoluteParent){
+                        if(uiScrollpoint.$target){
+                            uiScrollpoint.$target.off('scroll', uiScrollpoint.onScroll);
+                        }
+                        uiScrollpoint.setTarget( (!scrollpointAbsolute && uiScrollpointTarget) ? uiScrollpointTarget.$element : null);
+                        resetTarget();
+                        uiScrollpoint.reset();
+                    }
+                    absoluteParent = scrollpointAbsolute;
+                });
+
+                // ui-scrollpoint-action function name to use as scrollpoint callback
+                attrs.$observe('uiScrollpointAction', function(uiScrollpointAction){
+                    var action = scope.$eval(uiScrollpointAction);
+                    if(action && angular.isFunction(action)){
+                        uiScrollpoint.addAction(action);
+                    }
+                });
+
+                // ui-scrollpoint-class class to add instead of ui-scrollpoint
+                attrs.$observe('uiScrollpointClass', function(scrollpointClass){
+                    elm.removeClass(uiScrollpoint.scrollpointClass);
+                    uiScrollpoint.setClass(scrollpointClass);
+                    uiScrollpoint.reset();
+                });
+
+                // ui-scrollpoint-edge allows configuring which element and scroll edges match
+                attrs.$observe('uiScrollpointEdge', function(scrollpointEdge){
+                    if(scrollpointEdge){
+                        // allowed un-$eval'ed values
+                        var allowedKeywords = ['top', 'bottom', 'view'];
+                        if(allowedKeywords.indexOf(scrollpointEdge) == -1){
+                            // $eval any other values
+                            scrollpointEdge = scope.$eval(scrollpointEdge);
+                        }
+
+                        // assign it in controller
+                        uiScrollpoint.setEdges(scrollpointEdge);
+                        uiScrollpoint.reset();
+                    }
+                });
+    
+                function resetTarget() {
+                    uiScrollpoint.$target.on('scroll', uiScrollpoint.onScroll);
+                    scope.$on('$destroy', function () {
+                        uiScrollpoint.$target.off('scroll', uiScrollpoint.onScroll);
+                    });
+                }
+                resetTarget();
+                elm.ready(function(){ uiScrollpoint.ready=true; uiScrollpoint.onScroll(); });
+                scope.$on('scrollpointShouldReset', uiScrollpoint.reset);
+            }
+        };
+    }]).directive('uiScrollpointTarget', [function () {
+        return {
+            controller: ['$element', function ($element) {
+                this.$element = $element;
+            }]
+        };
+    }]);
+
+}());

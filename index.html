@@ -8,293 +8,325 @@
         
         <link rel="stylesheet" href="component.css">
     
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/tomorrow.min.css">
+        
         <style>
             [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
                 display: none !important;
             }
         </style>
+    
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,700" rel="stylesheet">
     </head>
     <body ng-app="demoApp" ng-cloak>
         
         
-            <div class="n-docs-header">
+        <div class="n-docs-header">
+            
+            <div headroom offset="330" classes="{pinned: 'n-docs-navbar--pinned', unpinned: 'n-docs-navbar--unpinned', top: 'n-docs-navbar--top'}" class="n-docs-navbar">
+                <canvas n-docs-granim colors="[['#2199e8', '#6433e8'],['#936cfb', '#5abbfc']]" class="n-docs-navbar__gradient"></canvas>
                 
-                <canvas class="n-docs-header__canvas" id="heroGradientCanvas"></canvas>
+                <div class="n-docs-navbar__content">
+                    <div class="small-6 columns">
+                        <h1 class="n-docs-navbar__title">
+                            nodes-component-starter
+                        </h1>
+                    </div>
+                    <div class="small-6 columns">
+                        <n-docs-github-link></n-docs-github-link>
+                    </div>
+                </div>
                 
-                <div class="n-docs-navbar">
-                    <h1 class="n-docs-navbar__title">
-                        nodes-component-starter
-                    </h1>
-                    <a href="#" class="n-docs-navbar__repository-link">
-                        G
-                    </a>
-                </div>
-        
-                <div class="n-docs-hero">
-                    <h1 class="n-docs-hero__title">
-                        nodes-component-starter
-                    </h1>
-                    <a href="#getStarted" class="n-docs-hero__scroll-anchor">Get started</a>
-                    <a href="#" class="n-docs-hero__repository-link">
-                        G
-                    </a>
-                </div>
             </div>
-        
-        
-        <div class="n-docs-repository">
-            <div class="row">
-                .n-docs-repository
-            </div>
-        </div>
     
-        <!--<div class="n-docs-styleguide">
-            <div class="n-docs-palettes">
-                <div class="row">
-                    <div class="background--primary-darkest columns">
-                        <p>$color-primary-darkest</p>
+            <div class="n-docs-hero">
+                <canvas n-docs-granim colors="[['#2199e8', '#6433e8'],['#936cfb', '#5abbfc']]" class="n-docs-hero__gradient"></canvas>
+                
+                <div class="n-docs-hero__content row">
+                    <div class="small-12 columns">
+                        <h1 class="n-docs-hero__title">
+                            nodes-component-starter
+                        </h1>
                     </div>
-                    <div class="background--primary-darker columns">
-                        <p>$color-primary-darker</p>
+                    <div class="small-12 columns">
+                        <h2 class="n-docs-hero__subtitle">
+                            A toolset for creating, maintaining and releasing open-source Angular 1.x modules with Typescript.
+                        </h2>
                     </div>
-                    <div class="background--primary-dark columns">
-                        <p>$color-primary-dark</p>
+                    <div class="small-12 columns text-center n-docs-hero__github">
+                        <n-docs-github-latest-release></n-docs-github-latest-release>
+                        <n-docs-github-link></n-docs-github-link>
                     </div>
-                    <div class="background--primary columns">
-                        <p>$color-primary</p>
+                    <div class="small-12 columns text-center">
+                        <a href="#getStarted" class="n-docs-hero__scroll-anchor">Get started</a>
                     </div>
-                    <div class="background--primary-light columns">
-                        <p>$color-primary-light</p>
-                    </div>
-                    <div class="background--primary-lighter columns">
-                        <p>$color-primary-lighter</p>
-                    </div>
-                    <div class="background--primary-lightest columns">
-                        <p>$color-primary-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--tetrad-2-darkest columns">
-                        <p>$color-tetrad-2-darkest</p>
-                    </div>
-                    <div class="background--tetrad-2-darker columns">
-                        <p>$color-tetrad-2-darker</p>
-                    </div>
-                    <div class="background--tetrad-2-dark columns">
-                        <p>$color-tetrad-2-dark</p>
-                    </div>
-                    <div class="background--tetrad-2 columns">
-                        <p>$color-tetrad-2</p>
-                    </div>
-                    <div class="background--tetrad-2-light columns">
-                        <p>$color-tetrad-2-light</p>
-                    </div>
-                    <div class="background--tetrad-2-lighter columns">
-                        <p>$color-tetrad-2-lighter</p>
-                    </div>
-                    <div class="background--tetrad-2-lightest columns">
-                        <p>$color-tetrad-2-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--triad-2-darkest columns">
-                        <p>$color-triad-2-darkest</p>
-                    </div>
-                    <div class="background--triad-2-darker columns">
-                        <p>$color-triad-2-darker</p>
-                    </div>
-                    <div class="background--triad-2-dark columns">
-                        <p>$color-triad-2-dark</p>
-                    </div>
-                    <div class="background--triad-2 columns">
-                        <p>$color-triad-2</p>
-                    </div>
-                    <div class="background--triad-2-light columns">
-                        <p>$color-triad-2-light</p>
-                    </div>
-                    <div class="background--triad-2-lighter columns">
-                        <p>$color-triad-2-lighter</p>
-                    </div>
-                    <div class="background--triad-2-lightest columns">
-                        <p>$color-triad-2-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--split-1-darkest columns">
-                        <p>$color-split-1-darkest</p>
-                    </div>
-                    <div class="background--split-1-darker columns">
-                        <p>$color-split-1-darker</p>
-                    </div>
-                    <div class="background--split-1-dark columns">
-                        <p>$color-split-1-dark</p>
-                    </div>
-                    <div class="background--split-1 columns">
-                        <p>$color-split-1</p>
-                    </div>
-                    <div class="background--split-1-light columns">
-                        <p>$color-split-1-light</p>
-                    </div>
-                    <div class="background--split-1-lighter columns">
-                        <p>$color-split-1-lighter</p>
-                    </div>
-                    <div class="background--split-1-lightest columns">
-                        <p>$color-split-1-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--complement-darkest columns">
-                        <p>$color-complement-darkest</p>
-                    </div>
-                    <div class="background--complement-darker columns">
-                        <p>$color-complement-darker</p>
-                    </div>
-                    <div class="background--complement-dark columns">
-                        <p>$color-complement-dark</p>
-                    </div>
-                    <div class="background--complement columns">
-                        <p>$color-complement</p>
-                    </div>
-                    <div class="background--complement-light columns">
-                        <p>$color-complement-light</p>
-                    </div>
-                    <div class="background--complement-lighter columns">
-                        <p>$color-complement-lighter</p>
-                    </div>
-                    <div class="background--complement-lightest columns">
-                        <p>$color-complement-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--split-2-darkest columns">
-                        <p>$color-split-2-darkest</p>
-                    </div>
-                    <div class="background--split-2-darker columns">
-                        <p>$color-split-2-darker</p>
-                    </div>
-                    <div class="background--split-2-dark columns">
-                        <p>$color-split-2-dark</p>
-                    </div>
-                    <div class="background--split-2 columns">
-                        <p>$color-split-2</p>
-                    </div>
-                    <div class="background--split-2-light columns">
-                        <p>$color-split-2-light</p>
-                    </div>
-                    <div class="background--split-2-lighter columns">
-                        <p>$color-split-2-lighter</p>
-                    </div>
-                    <div class="background--split-2-lightest columns">
-                        <p>$color-split-2-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--triad-3-darkest columns">
-                        <p>$color-triad-3-darkest</p>
-                    </div>
-                    <div class="background--triad-3-darker columns">
-                        <p>$color-triad-3-darker</p>
-                    </div>
-                    <div class="background--triad-3-dark columns">
-                        <p>$color-triad-3-dark</p>
-                    </div>
-                    <div class="background--triad-3 columns">
-                        <p>$color-triad-3</p>
-                    </div>
-                    <div class="background--triad-3-light columns">
-                        <p>$color-triad-3-light</p>
-                    </div>
-                    <div class="background--triad-3-lighter columns">
-                        <p>$color-triad-3-lighter</p>
-                    </div>
-                    <div class="background--triad-3-lightest columns">
-                        <p>$color-triad-3-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--tetrad-4-darkest columns">
-                        <p>$color-tetrad-4-darkest</p>
-                    </div>
-                    <div class="background--tetrad-4-darker columns">
-                        <p>$color-tetrad-4-darker</p>
-                    </div>
-                    <div class="background--tetrad-4-dark columns">
-                        <p>$color-tetrad-4-dark</p>
-                    </div>
-                    <div class="background--tetrad-4 columns">
-                        <p>$color-tetrad-4</p>
-                    </div>
-                    <div class="background--tetrad-4-light columns">
-                        <p>$color-tetrad-4-light</p>
-                    </div>
-                    <div class="background--tetrad-4-lighter columns">
-                        <p>$color-tetrad-4-lighter</p>
-                    </div>
-                    <div class="background--tetrad-4-lightest columns">
-                        <p>$color-tetrad-4-lightest</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="background--shade-darkest columns">
-                        <p>$color-shade-darkest</p>
-                    </div>
-                    <div class="background--shade-darker columns">
-                        <p>$color-shade-darker</p>
-                    </div>
-                    <div class="background--shade-dark columns">
-                        <p>$color-shade-dark</p>
-                    </div>
-                    <div class="background--shade columns">
-                        <p>$color-shade</p>
-                    </div>
-                    <div class="background--shade-light columns">
-                        <p>$color-shade-light</p>
-                    </div>
-                    <div class="background--shade-lighter columns">
-                        <p>$color-shade-lighter</p>
-                    </div>
-                    <div class="background--shade-lightest columns">
-                        <p>$color-shade-lightest</p>
-                    </div>
-                </div>
-            </div>
-        </div>-->
-        
-        <div class="n-docs-content" id="getStarted">
-            <div class="row" ng-controller="demoController as demo">
-                <div class="small-12 large-6 columns">
-                    {{demo.testValue | componentFilter}}
-                </div>
-                <div class="small-12 large-6 columns">
-                    <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
                 </div>
             </div>
         </div>
     
-        <script src="angular.js"></script>
+        <div class="n-docs-content">
+            <div class="n-docs-content__primary" id="getStarted">
+                <div ng-controller="demoController as demo">
+                    <div class="row" id="example" title="Example" data-scrollspy-broadcast>
+                        <div class="small-12 columns">
+                            <h2>Example</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="small-12 medium-6 columns">
+                            {{demo.testValue | componentFilter}}
+                        </div>
+                        <div class="small-12 medium-6 columns">
+                            <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row" id="availableUI" title="UI Components" data-scrollspy-broadcast>
+                    <div class="small-12 columns">
+                        <h2>
+                            UI Components
+                        </h2>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Github Link:</p>
+                        <n-docs-github-link></n-docs-github-link>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Github Stars:</p>
+                        <n-docs-github-stars></n-docs-github-stars>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Github Latest Release:</p>
+                        <n-docs-github-latest-release></n-docs-github-latest-release>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Npm Install Guide:</p>
+                        <n-docs-npm-install-guide></n-docs-npm-install-guide>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Angular Install Guide:</p>
+                        <n-docs-angular-install-guide></n-docs-angular-install-guide>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Callouts:</p>
+                        <p>Severity 0</p>
+                        <n-docs-callout severity="0">
+                            <p class="n-docs-callout__title">Just something nice</p>
+                            <div class="n-docs-callout__content">
+                                <p>Could be a nice trick to take full advantage of XY</p>
+                            </div>
+                        </n-docs-callout>
+                        <p>Severity 1</p>
+                        <n-docs-callout severity="1">
+                            <p class="n-docs-callout__title">Oh this is probably worth reading</p>
+                            <div class="n-docs-callout__content">
+                                <p>Maybe a browser inconsistency bug?</p>
+                            </div>
+                        </n-docs-callout>
+                        <p>Severity 2</p>
+                        <n-docs-callout severity="2">
+                            <p class="n-docs-callout__title">EVERYTHING IS ON FIRE!</p>
+                            <div class="n-docs-callout__content">
+                                <p>Breaking changes! Deprecations! OH MY!</p>
+                            </div>
+                        </n-docs-callout>
+                        <p>No Severity</p>
+                        <n-docs-callout>
+                            <p class="n-docs-callout__title">Same as using severity 0</p>
+                        </n-docs-callout>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Nodes Website Link</p>
+                        <n-docs-nodes-website-link></n-docs-nodes-website-link>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Nodes Engineering Blog Link</p>
+                        <n-docs-nodes-engeering-blog-link></n-docs-nodes-engeering-blog-link>
+                    </div>
+                    <div class="small-12 columns">
+                        <p class="lead">nDocs Table</p>
+                        <table class="n-docs-table">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        Option
+                                    </td>
+                                    <td>
+                                        Default
+                                    </td>
+                                    <td>
+                                        Description
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <code>foo</code>
+                                    </td>
+                                    <td>
+                                        <code>'bar'</code>
+                                    </td>
+                                    <td>
+                                        Toggles using foo
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="row" id="syntaxHighlighting" title="Syntax Highlighting" data-scrollspy-broadcast>
+                    <div class="small-12 columns">
+                        <h2>
+                            Syntax Highlighting
+                        </h2>
+                    </div>
+                    <div class="small-12 columns">
+                        <n-docs-code-example>
+                            <hljs hljs-include="'markupExample'"></hljs>
+                        </n-docs-code-example>
+            
+                        <n-docs-code-example>
+                            <hljs hljs-include="'javaScriptExample'"></hljs>
+                        </n-docs-code-example>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="n-docs-content__secondary hide-for-small-only">
+                <div class="row">
+                    <div class="small-12 columns">
+                        <n-docs-toc scan="#getStarted"></n-docs-toc>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+        <script src="vendor.js"></script>
 
         <!-- component.js will be used on dev, in production it will be rewrited to minfied version component.min.js -->
         <script src="component.js"></script>
     
         <script src="example.js"></script>
     
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var granimInstance = new Granim({
-                    element: '#heroGradientCanvas',
-                    name: 'granim',
-                    isPausedWhenNotInView: true,
-                    opacity: [1, 1],
-                    states : {
-                        "default-state": {
-                            gradients: [
-                                ['#2199e8', '#6433e8'],
-                                ['#936cfb', '#5abbfc']
-                            ]
-                        }
-                    }
+<script id="markupExample" type="text/ng-template">
+<!-- setup selection display/input input:text -->
+<p class="lead">
+    selection: <input type="text" ng-model="selection">
+</p>
+            
+<!-- bind scope.selection to ngSelect model -->
+<div class="row example" ng-select="selection" super-directive>
+    <div class="col-xs-12">
+            
+        <!-- five images with number as option value -->
+        <!-- add "selected" class on option selected -->
+        <img class="img-polaroid img-circle"
+            ng-repeat="num in [1, 2, 3, 4, 5] track by $id($index)"
+            ng-src="http://lorempixel.com/100/100/sports/{{ num }}"
+            ng-select-option="{{ num }}"
+            select-class="{'selected': $optSelected}">
+    </div>
+</div>
+</script>
+        
+<script id="javaScriptExample" type="text/ng-template">
+angular.module('nDocs')
+    .service('nDocsGithubService', function($q, $http, $window, GITHUB) {
+        return {
+            getStatistics: getStatistics
+        };
+
+        function getStatistics() {
+
+            var deferred = $q.defer();
+
+            var repoUrl = [
+                GITHUB.URL,
+                GITHUB.NAME,
+                GITHUB.REPOSITORY
+            ].join('/');
+
+            var repoRequest = {
+                method: 'GET',
+                url: repoUrl,
+                cache: true,
+                params: {
+                    client_id: GITHUB.CLIENT_ID,
+                    client_secret: GITHUB.CLIENT_SECRET
+                }
+            };
+
+            var releasesUrl = [
+                GITHUB.URL,
+                GITHUB.NAME,
+                GITHUB.REPOSITORY,
+                'releases',
+                'latest'
+            ].join('/');
+
+            var releasesRequest = {
+                method: 'GET',
+                url: releasesUrl,
+                cache: true,
+                params: {
+                    client_id: GITHUB.CLIENT_ID,
+                    client_secret: GITHUB.CLIENT_SECRET
+                }
+            };
+
+            if(!$window.localStorage.getItem(GITHUB.NAME + '-' + GITHUB.REPOSITORY)) {
+                _getFromGithub().then(function(data) {
+                    deferred.resolve(data);
                 });
-            });
-        </script>
+            } else {
+                var localStorageData = JSON.parse($window.localStorage.getItem(GITHUB.NAME + '-' + GITHUB.REPOSITORY));
+                var lastTime = localStorageData.timeStamp;
+
+                // Cache response for 10sec to avoid hitting the quota limits
+                if(new Date().valueOf() - lastTime < 10000) {
+                    deferred.resolve(localStorageData);
+                } else {
+                    _getFromGithub().then(function(data) {
+                        deferred.resolve(data);
+                    });
+            }
+
+        }
+
+        return deferred.promise;
+
+        function _getFromGithub() {
+            return $q.all([$http(repoRequest), $http(releasesRequest)])
+                .then(function(responses) {
+                    var repo = responses[0].data;
+                    var releases = responses[1].data;
+                    
+                    var toStorage = {
+                        timeStamp: new Date().valueOf(),
+                        repoStars: repo.stargazers_count,
+                        repoName: repo.name,
+                        repoUrl: repo.html_url,
+                        releaseName: releases.name,
+                        releaseUrl: releases.html_url
+                    };
+                    
+                    $window.localStorage.setItem(GITHUB.NAME + '-' + GITHUB.REPOSITORY, JSON.stringify(toStorage));
+                    
+                    return toStorage;
+            
+                })
+                .catch(function(response) {
+                    deferred.reject(response);
+                });
+        }
+
+    }
+});
+</script>
+
     </body>
 </html>

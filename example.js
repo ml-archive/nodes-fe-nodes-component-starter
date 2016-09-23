@@ -2,7 +2,7 @@
 	
 	angular.module('demoApp', [
 		'nDocs',
-		'component'
+		'nImage'
 	]);
 	
 	angular

@@ -7,7 +7,7 @@ describe('ComponentDirective', function() {
 		module('component');
 	});
 
-	beforeEach(module('src/component.html'));
+	beforeEach(module('src/unique-component-template-name.html'));
 
 	var $compile, $rootScope, scope, element;
 

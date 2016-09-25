@@ -24,6 +24,8 @@ var useref = require('gulp-useref');
 var cdnizer = require('gulp-cdnizer');
 var ghPages = require('gulp-gh-pages');
 
+var pkgConfig = require('./package.json');
+
 var config = {
 	templates: {
 		enabled: true,
@@ -60,7 +62,7 @@ var config = {
 	systemJs: {
 		entry: './tmp/main.ts',
 		dev: {
-			dist: './dist/component.js',
+			dist: './dist/' + pkgConfig.name + '.js',
 			options: {
 				sourceMaps: true,
 				debug: true,
@@ -69,7 +71,7 @@ var config = {
 			}
 		},
 		production: {
-			dist: './dist/component.min.js',
+			dist: './dist/' + pkgConfig.name + '.min.js',
 			options: {
 				sourceMaps: true,
 				runtime: false,

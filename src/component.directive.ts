@@ -18,7 +18,7 @@ namespace component {
         link: (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => void = this.linkFn;
         controller: ComponentDirectiveController = ComponentDirectiveController;
         restrict: string = 'EA';
-        templateUrl: string = 'src/component.html';
+        templateUrl: string = 'src/unique-component-template-name.html';
         controllerAs: string = 'ComponentDirective';
         scope: IComponentDirectiveScope = {
             event: '&onEvent',

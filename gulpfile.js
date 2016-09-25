@@ -5,7 +5,6 @@ var postcss    		= require('gulp-postcss');
 var sass 			= require('gulp-sass');
 var autoprefixer 	= require('autoprefixer');
 var cssnano 		= require('cssnano');
-var rename = require('gulp-rename');
 
 var templateCache 	= require('gulp-angular-templatecache');
 
@@ -24,8 +23,6 @@ var fs 				= require('fs');
 var useref = require('gulp-useref');
 var cdnizer = require('gulp-cdnizer');
 var ghPages = require('gulp-gh-pages');
-
-var pkgConfig = require('./package.json');
 
 var config = {
 	templates: {
@@ -49,8 +46,7 @@ var config = {
 	sass: {
 		src: './src/**/*.scss',
 		dist: './dist',
-		docs: './docs',
-		name: pkgConfig.name + '.css'
+		docs: './docs'
 	},
 	autoprefixer: {
 		browsers: ['last 2 versions']
@@ -64,7 +60,7 @@ var config = {
 	systemJs: {
 		entry: './tmp/main.ts',
 		dev: {
-			dist: './dist/' + pkgConfig.name + '.js',
+			dist: './dist/component.js',
 			options: {
 				sourceMaps: true,
 				debug: true,
@@ -73,7 +69,7 @@ var config = {
 			}
 		},
 		production: {
-			dist: './dist/' + pkgConfig.name + '.min.js',
+			dist: './dist/component.min.js',
 			options: {
 				sourceMaps: true,
 				runtime: false,
@@ -100,7 +96,6 @@ gulp.task('styles', function() {
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss(processors))
 		.pipe(sourcemaps.write())
-		.pipe(rename(config.sass.name))
 		.pipe(gulp.dest(config.sass.dist));
 });
 

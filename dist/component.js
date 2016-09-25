@@ -10,7 +10,7 @@ $__System.register("2", [], function (exports_1, context_1) {
         setters: [],
         execute: function () {
             exports_1("default", angular.module("templates", []).run(["$templateCache", function ($templateCache) {
-                $templateCache.put('src/component.html', '<div class="component">\n    <button class="button success" ng-click="ComponentDirective.event({message: \'from directive\'})">Trigger outside method (controller)</button>\n    <p>\n        Data from the outside: {{ComponentDirective.data}}\n    </p>\n    <p>\n        Internal directive data: {{internalValue}}\n        <button class="button" ng-click="internalDirectiveMethod()">Trigger internal method</button>\n    </p>\n</div>');
+                $templateCache.put('src/unique-component-template-name.html', '<div class="component">\n    <button class="button success" ng-click="ComponentDirective.event({message: \'from directive\'})">Trigger outside method (controller)</button>\n    <p>\n        Data from the outside: {{ComponentDirective.data}}\n    </p>\n    <p>\n        Internal directive data: {{internalValue}}\n        <button class="button" ng-click="internalDirectiveMethod()">Trigger internal method</button>\n    </p>\n</div>');
             }]));
         }
     };
@@ -176,7 +176,7 @@ $__System.register('8', [], function (exports_1, context_1) {
                         this.link = this.linkFn;
                         this.controller = ComponentDirectiveController;
                         this.restrict = 'EA';
-                        this.templateUrl = 'src/component.html';
+                        this.templateUrl = 'src/unique-component-template-name.html';
                         this.controllerAs = 'ComponentDirective';
                         this.scope = {
                             event: '&onEvent',
@@ -226,4 +226,4 @@ $__System.register('1', ['2', '3', '4', '5', '6', '7', '8'], function (exports_1
   else
     factory();
 });
-//# sourceMappingURL=nodes-component-starter.js.map
+//# sourceMappingURL=component.js.map

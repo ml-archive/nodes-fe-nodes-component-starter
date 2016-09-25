@@ -2,7 +2,24 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
         <title>nodes-component-starter</title>
+        <meta name="description" content="nodes-component-starter - A toolset for creating, maintaining and releasing open-source Angular 1.x modules with Typescript.">
+    
+        <meta property="og:title" content="nodes-component-starter">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="http://nodes-frontend.github.io/nodes-component-starter">
+        <meta property="og:site_name" content="nodes-component-starter">
+        <meta property="og:article:author" content="Nodes Agency">
+    
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@nodesdk">
+        <meta name="twitter:title" content="nodes-component-starter">
+        <meta name="twitter:description" content="A toolset for creating, maintaining and releasing open-source Angular 1.x modules with Typescript.">
+    
+        <link rel="canonical" href="http://nodes-frontend.github.io/nodes-component-starter"/>
     
         <link rel="stylesheet" href="docs.css">
         
@@ -67,11 +84,19 @@
         <div class="n-docs-content">
             <div class="n-docs-content__primary" id="getStarted">
                 <div ng-controller="demoController as demo">
-                    <div n-image
-                         width="200"
-                         height="200"
-                         mode="crop"
-                         n-src="https://d1gwekl0pol55k.cloudfront.net/image/dnf-biodiv/default/Egern.dUMocWKYJB.jpg"></div>
+                    <div class="row" id="example" title="Example" data-scrollspy-broadcast>
+                        <div class="small-12 columns">
+                            <h2>Example</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="small-12 medium-6 columns">
+                            {{demo.testValue | componentFilter}}
+                        </div>
+                        <div class="small-12 medium-6 columns">
+                            <component-directive on-event="demo.controllerMethod(message)" data="demo.testValue"></component-directive>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="row" id="availableUI" title="UI Components" data-scrollspy-broadcast>

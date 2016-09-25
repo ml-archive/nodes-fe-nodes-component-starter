@@ -5,6 +5,7 @@ var postcss    		= require('gulp-postcss');
 var sass 			= require('gulp-sass');
 var autoprefixer 	= require('autoprefixer');
 var cssnano 		= require('cssnano');
+var rename = require('gulp-rename');
 
 var templateCache 	= require('gulp-angular-templatecache');
 
@@ -48,7 +49,8 @@ var config = {
 	sass: {
 		src: './src/**/*.scss',
 		dist: './dist',
-		docs: './docs'
+		docs: './docs',
+		name: pkgConfig.name + '.css'
 	},
 	autoprefixer: {
 		browsers: ['last 2 versions']
@@ -98,6 +100,7 @@ gulp.task('styles', function() {
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss(processors))
 		.pipe(sourcemaps.write())
+		.pipe(rename(config.sass.name))
 		.pipe(gulp.dest(config.sass.dist));
 });
 

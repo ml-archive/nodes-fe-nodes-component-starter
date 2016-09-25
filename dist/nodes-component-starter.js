@@ -226,4 +226,4 @@ $__System.register('1', ['2', '3', '4', '5', '6', '7', '8'], function (exports_1
   else
     factory();
 });
-//# sourceMappingURL=component.js.map
+//# sourceMappingURL=nodes-component-starter.js.map

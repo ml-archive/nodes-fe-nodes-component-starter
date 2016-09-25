@@ -1,8 +1,7 @@
 {
-	"ambientDependencies": {
-		"angular": "registry:dt/angular#1.5.0+20160412133217",
-		"es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
-		"jasmine": "registry:dt/jasmine#2.2.0+20160412134438",
-		"jquery": "registry:dt/jquery#1.10.0+20160417213236"
+	"globalDependencies": {
+		"angular": "registry:dt/angular#1.5.0+20160829152510",
+		"es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
+		"jasmine": "registry:dt/jasmine#2.2.0+20160621224255"
 	}
 }

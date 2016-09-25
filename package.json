@@ -8,7 +8,7 @@
     "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "coveralls": "npm run test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "karma": "./node_modules/karma/bin/karma start karma.conf.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post && npm run docs",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "serve:dev": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.dev.config.js | node ./node_modules/gulp/bin/gulp watch",
     "serve:build": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.build.config.js | node ./node_modules/gulp/bin/gulp watch",
     "serve:docs": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.docs.config.js | node ./node_modules/gulp/bin/gulp watch",
